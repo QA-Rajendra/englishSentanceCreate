@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>इंग्रजीचा आत्मा — English Learning Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════
+   VARIABLES & RESET
+═══════════════════════════════════════════════════ */
+:root {
+  --bg:#08080f; --surface:#111118; --card:#181824; --border:#252538;
+  --accent:#f0c040; --accent2:#40c8f0; --accent3:#c040f0;
+  --text:#e8e8f4; --muted:#6060a0; --green:#40f0a0; --orange:#f0a060; --red:#f07070;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(240,192,64,.025)1px,transparent 1px),linear-gradient(90deg,rgba(240,192,64,.025)1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+
+/* ═══════════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════════ */
+header{position:relative;z-index:2;padding:32px 48px 20px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(240,192,64,.07)0%,transparent 100%);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+.header-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:4px;text-transform:uppercase;margin-bottom:8px;opacity:.7;}
+h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3.5vw,2.6rem);font-weight:900;line-height:1.1;background:linear-gradient(135deg,var(--accent)0%,#fff 45%,var(--accent2)100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.subtitle{margin-top:6px;color:var(--muted);font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.5px;}
+.legend{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+.legend-item{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--muted);}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* ═══════════════════════════════════════════════════
+   NAV TABS
+═══════════════════════════════════════════════════ */
+.main-nav{position:relative;z-index:2;display:flex;gap:6px;padding:14px 48px;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+.main-nav::-webkit-scrollbar{display:none;}
+.nav-tab{background:none;border:1px solid transparent;border-radius:8px;padding:8px 16px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap;letter-spacing:.5px;}
+.nav-tab:hover{color:var(--text);border-color:var(--border);}
+.nav-tab.active{background:rgba(240,192,64,.12);color:var(--accent);border-color:rgba(240,192,64,.3);}
+
+/* ═══════════════════════════════════════════════════
+   MAIN & TAB SYSTEM
+═══════════════════════════════════════════════════ */
+main{position:relative;z-index:1;max-width:1340px;margin:0 auto;padding:32px 48px 60px;}
+.tab-content{display:none;}
+.tab-content.active{display:block;animation:fadeUp .3s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══════════════════════════════════════════════════
+   SHARED PANEL STYLE
+═══════════════════════════════════════════════════ */
+.panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-bottom:24px;position:relative;overflow:hidden;}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));}
+.panel-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:16px;opacity:.85;}
+.section-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px;margin-top:4px;}
+.section-desc{font-family:'DM Sans',sans-serif;font-size:14px;color:var(--muted);margin-bottom:22px;line-height:1.6;}
+
+/* ═══════════════════════════════════════════════════
+   TAB 1: SENTENCE GENERATOR
+═══════════════════════════════════════════════════ */
+/* Reference Toggle */
+.ref-toggle-btn{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 18px;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:16px;width:100%;transition:all .2s;}
+.ref-toggle-btn:hover,.ref-toggle-btn.open{color:var(--accent);border-color:rgba(240,192,64,.3);background:rgba(240,192,64,.06);}
+.ref-toggle-btn .arrow{transition:transform .2s;font-size:10px;}
+.ref-toggle-btn.open .arrow{transform:rotate(90deg);}
+.ref-panel{display:none;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 26px;margin-bottom:20px;animation:fadeUp .25s ease both;}
+.ref-panel.open{display:block;}
+.ref-header{margin-bottom:18px;}
+.ref-header-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text);}
+.ref-header-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;margin-top:4px;}
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px;}
+.ref-col-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--accent2);text-transform:uppercase;margin-bottom:10px;}
+.ref-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.ref-list li{display:flex;align-items:center;gap:8px;font-size:13px;}
+.ref-list .ref-subhead{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+.ref-eng{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent);min-width:70px;}
+.ref-sep{color:var(--border);font-size:10px;}
+.ref-mar{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--orange);}
+
+/* Verb Dictionary Panel */
+.vdict-panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-bottom:20px;position:relative;overflow:hidden;}
+.vdict-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),var(--accent2),var(--accent));}
+.vdict-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
+.vdict-count{background:rgba(64,240,160,.1);border:1px solid rgba(64,240,160,.2);color:var(--green);font-family:'IBM Plex Mono',monospace;font-size:11px;border-radius:20px;padding:4px 14px;letter-spacing:1px;white-space:nowrap;}
+.vdict-search-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.vsearch-wrap{position:relative;}
+.vsearch-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none;color:var(--muted);}
+.vsearch-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 36px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none;transition:border-color .2s;}
+.vsearch-wrap input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(64,240,160,.07);}
+.vsearch-wrap input::placeholder{color:var(--muted);opacity:.45;}
+.vsearch-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:4px;transition:color .15s;display:none;}
+.vsearch-clear:hover{color:var(--accent);}
+.vsearch-clear.show{display:block;}
+.vselect-wrap select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 36px 10px 14px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none;cursor:pointer;transition:border-color .2s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236060a0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
+.vselect-wrap select:focus{border-color:var(--accent2);}
+.vselect-wrap select option{background:var(--surface);color:var(--text);}
+/* Verb Card */
+.vcard{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:14px;overflow:hidden;animation:fadeUp .25s ease both;}
+.vcard-inner{display:flex;align-items:center;gap:20px;padding:16px 20px;flex-wrap:wrap;}
+.vcard-main{min-width:140px;}
+.vcard-eng{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--accent);line-height:1.1;}
+.vcard-mar{font-family:'DM Sans',sans-serif;font-size:15px;color:var(--orange);margin-top:3px;}
+.vforms-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;flex:1;}
+.vform-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;}
+.vform-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;}
+.vform-val{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--green);font-weight:500;}
+.use-btn{background:var(--green);color:#08080f;border:none;border-radius:8px;padding:10px 20px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.use-btn:hover{background:#fff;transform:translateY(-1px);box-shadow:0 6px 20px rgba(64,240,160,.2);}
+/* Verb Grid */
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:6px;max-height:272px;overflow-y:auto;padding-right:4px;}
+.vgrid::-webkit-scrollbar{width:4px;}
+.vgrid::-webkit-scrollbar-track{background:var(--surface);}
+.vgrid::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.vgrid::-webkit-scrollbar-thumb:hover{background:var(--accent);}
+.vchip{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer;transition:all .15s;gap:6px;}
+.vchip:hover{border-color:var(--green);background:rgba(64,240,160,.05);}
+.vchip.sel{border-color:var(--accent);background:rgba(240,192,64,.08);}
+.vchip-num{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--border);margin-right:2px;}
+.vchip-eng{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text);font-weight:500;}
+.vchip-mar{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--muted);text-align:right;line-height:1.2;}
+.no-res{grid-column:1/-1;text-align:center;padding:28px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:1px;}
+
+/* Input Panel */
+.input-panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-bottom:24px;position:relative;overflow:hidden;}
+.input-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));}
+.inputs-row{display:grid;grid-template-columns:1fr 1fr 1fr 1.2fr auto;gap:14px;align-items:end;}
+.field{display:flex;flex-direction:column;gap:6px;}
+.field label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+.field label .tag{display:inline-block;background:rgba(240,192,64,.15);color:var(--accent);border-radius:4px;padding:1px 6px;margin-right:5px;font-size:10px;}
+.field input{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 13px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s;}
+.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(240,192,64,.08);}
+.field input::placeholder{color:var(--muted);opacity:.45;}
+.gen-btn{background:var(--accent);color:#08080f;border:none;border-radius:8px;padding:0 26px;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;letter-spacing:1.5px;cursor:pointer;transition:all .2s;white-space:nowrap;text-transform:uppercase;height:41px;align-self:end;}
+.gen-btn:hover{background:#fff;transform:translateY(-1px);box-shadow:0 8px 28px rgba(240,192,64,.22);}
+.formula-bar{display:flex;align-items:center;gap:6px;margin-top:14px;padding:9px 13px;background:var(--surface);border-radius:8px;border:1px solid var(--border);flex-wrap:wrap;}
+.formula-bar span{font-family:'IBM Plex Mono',monospace;font-size:11px;}
+.f-sub{color:var(--red);} .f-help{color:var(--accent2);} .f-verb{color:var(--green);} .f-obj{color:var(--accent3);} .f-plus{color:var(--border);}
+
+/* Stats & Controls */
+#output-wrapper{display:none;}
+#output-wrapper.visible{display:block;}
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;text-align:center;}
+.stat-value{font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:500;color:var(--accent);}
+.stat-label{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--muted);margin-top:4px;}
+.controls-row{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.filter-label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;}
+.filter-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);cursor:pointer;transition:all .15s;}
+.filter-btn:hover{color:var(--text);border-color:var(--accent2);}
+.filter-btn.active{background:rgba(64,200,240,.12);color:var(--accent2);border-color:rgba(64,200,240,.3);}
+.search-wrap{position:relative;flex:1;min-width:200px;}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:13px;color:var(--muted);}
+.search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px 8px 36px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none;transition:border-color .2s;}
+.search-wrap input:focus{border-color:var(--accent2);}
+.search-wrap input::placeholder{color:var(--muted);opacity:.45;}
+.copy-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:8px 18px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.copy-btn:hover{color:var(--accent);border-color:var(--accent);}
+
+/* Table */
+.master-table-wrap{overflow-x:auto;}
+.master-table{width:100%;border-collapse:collapse;font-size:13px;}
+.master-table thead th{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--border);text-align:left;white-space:nowrap;}
+.master-table tbody td{padding:9px 14px;border-bottom:1px solid rgba(37,37,56,.5);vertical-align:middle;}
+.master-table tbody tr:hover td{background:rgba(240,192,64,.03);}
+.group-header td{background:var(--surface);padding:10px 14px;}
+.subject-pill{display:flex;align-items:center;gap:10px;}
+.subject-word{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--accent);}
+.subject-mar{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--orange);}
+.row-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--border);width:30px;}
+.w-sub{color:var(--red)!important;font-weight:600;}
+.w-help{color:var(--accent2)!important;}
+.w-verb{color:var(--green)!important;font-weight:600;}
+.w-obj{color:var(--accent3)!important;}
+.type-badge{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:4px;white-space:nowrap;}
+.type-modal{background:rgba(192,64,240,.12);color:var(--accent3);border:1px solid rgba(192,64,240,.25);}
+.type-helping{background:rgba(64,200,240,.10);color:var(--accent2);border:1px solid rgba(64,200,240,.2);}
+.helper-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);background:rgba(64,240,160,.07);padding:2px 8px;border-radius:4px;}
+.tense-text{font-size:11px;color:var(--muted);font-family:'DM Sans',sans-serif;}
+.mar-text{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--orange);}
+.eng-cell{font-family:'DM Sans',sans-serif;font-size:13px;}
+.empty-state{text-align:center;padding:60px 20px;}
+.empty-icon{font-size:48px;margin-bottom:16px;}
+.empty-title{font-family:'Playfair Display',serif;font-size:24px;color:var(--text);}
+.empty-sub{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);margin-top:8px;letter-spacing:1px;}
+
+/* ═══════════════════════════════════════════════════
+   TAB 2: इंग्रजीचा आत्मा
+═══════════════════════════════════════════════════ */
+.atma-sec{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-bottom:22px;position:relative;overflow:hidden;}
+.atma-sec::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent3),var(--accent),var(--green));}
+.atma-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;}
+.atma-icon{font-size:28px;flex-shrink:0;margin-top:2px;}
+.atma-ttl{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text);line-height:1.2;}
+.atma-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:4px;}
+/* Pronoun Table */
+.ptable-wrap{overflow-x:auto;}
+.ptable{width:100%;border-collapse:collapse;font-size:13px;}
+.ptable thead tr{background:var(--surface);}
+.ptable th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);}
+.ptable th span{color:var(--orange);display:block;font-size:9px;margin-top:2px;}
+.ptable tbody tr{border-bottom:1px solid rgba(37,37,56,.5);transition:background .12s;}
+.ptable tbody tr:hover{background:rgba(240,192,64,.04);}
+.ptable td{padding:10px 12px;vertical-align:middle;}
+.p-sub{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--red);}
+.p-obj{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--accent2);}
+.p-pos{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--green);}
+.p-posp{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--accent);}
+.p-ref{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent3);}
+.p-mar{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--orange);}
+.p-ex{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--muted);font-style:italic;}
+.p-ex em{color:var(--accent2);font-style:normal;font-weight:600;}
+.pr1 td:first-child{border-left:3px solid var(--red);}
+.pr2 td:first-child{border-left:3px solid var(--accent2);}
+.pr3 td:first-child{border-left:3px solid var(--green);}
+.pr4 td:first-child{border-left:3px solid var(--accent3);}
+.pr5 td:first-child{border-left:3px solid var(--accent);}
+.pr6 td:first-child{border-left:3px solid var(--orange);}
+.pr7 td:first-child{border-left:3px solid #70a0f0;}
+/* Helping Verbs */
+.hv-groups{display:flex;flex-direction:column;gap:18px;}
+.hv-gtitle{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;}
+.hv-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:10px;}
+.hvc{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;transition:border-color .15s;}
+.hvc:hover{border-color:var(--accent2);}
+.hvc-eng{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--accent2);line-height:1;margin-bottom:3px;}
+.hvc-mar{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--orange);margin-bottom:7px;}
+.hvc-ex{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);font-style:italic;}
+.hvc-exm{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--muted);margin-top:2px;}
+/* Modal Grid */
+.modal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:12px;}
+.modal-c{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;transition:all .15s;}
+.modal-c:hover{border-color:var(--accent3);transform:translateY(-1px);box-shadow:0 6px 20px rgba(192,64,240,.1);}
+.modal-ch{display:flex;align-items:baseline;gap:10px;margin-bottom:5px;}
+.modal-eng{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--accent3);}
+.modal-mar{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--orange);}
+.modal-use{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.4;}
+.modal-exs{display:flex;flex-direction:column;gap:4px;}
+.modal-ee{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);font-style:italic;}
+.modal-em{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--muted);}
+/* Demonstratives */
+.demo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:12px;}
+.demo-c{border-radius:12px;padding:18px 20px;border:1px solid;transition:transform .15s;}
+.demo-c:hover{transform:translateY(-2px);}
+.demo-near{background:rgba(64,200,240,.07);border-color:rgba(64,200,240,.25);}
+.demo-far{background:rgba(240,192,64,.07);border-color:rgba(240,192,64,.25);}
+.demo-word{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;}
+.demo-near .demo-word{color:var(--accent2);}
+.demo-far .demo-word{color:var(--accent);}
+.demo-mar{font-family:'DM Sans',sans-serif;font-size:15px;color:var(--orange);margin:4px 0;}
+.demo-rule{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:8px;}
+.demo-ex{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);font-style:italic;}
+/* SVA Table */
+.sva-wrap{overflow-x:auto;}
+.sva-tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.sva-tbl th{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--border);}
+.sva-tbl td{padding:10px 14px;border-bottom:1px solid rgba(37,37,56,.4);}
+.sva-sub{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text);font-weight:500;white-space:nowrap;}
+.sva-y{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--green);}
+.sva-tbl tbody tr:hover td{background:rgba(64,240,160,.04);}
+/* Live Builder */
+.builder-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin-bottom:14px;}
+.bfield{display:flex;flex-direction:column;gap:6px;}
+.blbl{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+.bfield select,.bfield input{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none;transition:border-color .2s;}
+.bfield select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236060a0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
+.bfield select:focus,.bfield input:focus{border-color:var(--accent);}
+.bfield select option{background:var(--surface);}
+.builder-out{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;}
+.builder-out::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),var(--accent2));}
+.b-sentence{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--accent);line-height:1.3;margin-bottom:6px;}
+.b-formula{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;}
+
+/* ═══════════════════════════════════════════════════
+   TAB 3: TENSE EXPLORER
+═══════════════════════════════════════════════════ */
+.tense-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px;}
+.tense-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s;}
+.tense-card:hover{border-color:var(--accent2);}
+.tense-card-head{padding:14px 18px 10px;}
+.tense-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;line-height:1.2;}
+.tense-name-mar{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--orange);margin-top:2px;}
+.tense-formula{font-family:'IBM Plex Mono',monospace;font-size:11px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:7px 12px;margin:0 18px 12px;color:var(--accent2);}
+.tense-examples{padding:0 18px 14px;display:flex;flex-direction:column;gap:8px;}
+.tense-ex{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);padding:7px 10px;background:rgba(255,255,255,.02);border-radius:6px;border-left:3px solid var(--border);}
+.tense-ex span{display:block;color:var(--orange);font-size:12px;margin-top:3px;}
+
+/* ═══════════════════════════════════════════════════
+   TAB 4: IDIOMS
+═══════════════════════════════════════════════════ */
+.adv-search-row{display:flex;gap:12px;align-items:center;margin-bottom:18px;flex-wrap:wrap;}
+.count-badge{background:rgba(64,240,160,.1);border:1px solid rgba(64,240,160,.2);color:var(--green);font-family:'IBM Plex Mono',monospace;font-size:11px;border-radius:20px;padding:4px 14px;letter-spacing:1px;}
+.idiom-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+.idiom-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;transition:border-color .2s;}
+.idiom-card:hover{border-color:var(--accent3);}
+.idiom-phrase{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px;}
+.idiom-mar{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--orange);margin-bottom:6px;}
+.idiom-meaning{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.5;}
+.idiom-example{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);font-style:italic;padding:6px 10px;background:var(--surface);border-radius:6px;border-left:3px solid var(--accent3);}
+
+/* ═══════════════════════════════════════════════════
+   TAB 5: PHRASAL VERBS
+═══════════════════════════════════════════════════ */
+.phrasal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.phrasal-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;transition:border-color .2s;}
+.phrasal-card:hover{border-color:var(--green);}
+.phrasal-verb{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--green);margin-bottom:4px;}
+.phrasal-mar{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--orange);margin-bottom:6px;}
+.phrasal-meaning{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.5;}
+.phrasal-ex{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);font-style:italic;padding:6px 10px;background:var(--surface);border-radius:6px;border-left:3px solid var(--green);}
+
+/* ═══════════════════════════════════════════════════
+   TAB 6: SENTENCE PATTERNS
+═══════════════════════════════════════════════════ */
+.pattern-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;}
+.pattern-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s;}
+.pattern-card:hover{border-color:var(--accent);}
+.pattern-head{display:flex;align-items:center;gap:14px;padding:14px 18px 10px;}
+.pattern-num{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:500;color:var(--border);}
+.pattern-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--accent);}
+.pattern-title-mar{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--orange);margin-top:2px;}
+.pattern-formula{font-family:'IBM Plex Mono',monospace;font-size:11px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:7px 12px;margin:0 18px 12px;color:var(--accent2);}
+.pattern-body{padding:0 18px 14px;}
+.pattern-explanation{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);margin-bottom:10px;line-height:1.5;}
+.pattern-examples{display:flex;flex-wrap:wrap;gap:6px;}
+.pattern-ex-chip{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-style:italic;}
+
+/* ═══════════════════════════════════════════════════
+   TAB 7: GRAMMAR QUIZ
+═══════════════════════════════════════════════════ */
+.quiz-progress{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:16px;flex-wrap:wrap;}
+.quiz-score-box{text-align:center;min-width:50px;}
+.quiz-score-val{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:500;color:var(--accent);}
+.quiz-score-lbl{font-family:'DM Sans',sans-serif;font-size:10px;color:var(--muted);margin-top:2px;}
+.quiz-bar-wrap{flex:1;min-width:200px;}
+.quiz-bar-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;}
+.quiz-bar-track{background:var(--surface);border-radius:4px;height:6px;overflow:hidden;}
+.quiz-bar-fill{background:var(--green);height:100%;border-radius:4px;transition:width .4s ease;}
+.quiz-restart-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:7px 14px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);cursor:pointer;transition:all .15s;}
+.quiz-restart-btn:hover{color:var(--accent);border-color:var(--accent);}
+.quiz-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px 32px;position:relative;overflow:hidden;}
+.quiz-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));}
+.quiz-q-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:12px;}
+.quiz-question{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.3;}
+.quiz-hint{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--muted);margin-bottom:20px;font-style:italic;}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.quiz-opt{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);cursor:pointer;text-align:left;transition:all .15s;}
+.quiz-opt:hover:not(:disabled){border-color:var(--accent2);background:rgba(64,200,240,.07);}
+.quiz-opt.correct{border-color:var(--green)!important;background:rgba(64,240,160,.12)!important;color:var(--green)!important;}
+.quiz-opt.wrong{border-color:var(--red)!important;background:rgba(240,112,112,.1)!important;color:var(--red)!important;}
+.quiz-feedback{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);display:none;margin-bottom:12px;line-height:1.5;}
+.quiz-feedback.show{display:block;}
+.quiz-feedback.correct{border-color:var(--green);background:rgba(64,240,160,.07);}
+.quiz-feedback.wrong{border-color:var(--red);background:rgba(240,112,112,.07);}
+.quiz-next-btn{background:var(--accent);color:#08080f;border:none;border-radius:8px;padding:10px 24px;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all .2s;display:none;}
+.quiz-next-btn.show{display:inline-block;}
+.quiz-next-btn:hover{background:#fff;transform:translateY(-1px);}
+.quiz-complete{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:48px 32px;text-align:center;}
+.quiz-complete-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--text);margin-bottom:12px;}
+.quiz-complete-score{font-family:'IBM Plex Mono',monospace;font-size:56px;font-weight:500;color:var(--accent);line-height:1;margin-bottom:10px;}
+.quiz-complete-sub{font-family:'DM Sans',sans-serif;font-size:14px;color:var(--muted);margin-bottom:24px;}
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════ */
+@media(max-width:900px){
+  header,.main-nav,main{padding-left:18px;padding-right:18px;}
+  .inputs-row{grid-template-columns:1fr 1fr;}
+  .gen-btn{grid-column:1/-1;height:44px;}
+  .vdict-search-row{grid-template-columns:1fr;}
+  .vforms-grid{grid-template-columns:repeat(2,1fr);}
+  .vcard-inner{flex-direction:column;align-items:flex-start;gap:12px;}
+  .stats-bar{grid-template-columns:repeat(2,1fr);}
+  .quiz-options{grid-template-columns:1fr;}
+  .ref-grid{grid-template-columns:1fr 1fr;}
+}
+
+/* ─── ATMA TAB ─── */
+.atma-sec{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-bottom:24px;position:relative;overflow:hidden;}
+.atma-sec::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent3),var(--accent),var(--green));}
+.atma-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;}
+.atma-icon{font-size:28px;line-height:1;flex-shrink:0;margin-top:2px;}
+.atma-ttl{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text);line-height:1.2;}
+.atma-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:4px;}
+.section-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px;margin-top:4px;}
+.section-desc{font-family:'DM Sans',sans-serif;font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.6;}
+.ptable-wrap{overflow-x:auto;}
+.ptable{width:100%;border-collapse:collapse;font-size:13px;}
+.ptable thead tr{background:var(--surface);}
+.ptable th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);}
+.ptable th span{color:var(--orange);display:block;font-size:9px;margin-top:2px;}
+.ptable tbody tr{border-bottom:1px solid rgba(37,37,56,0.5);transition:background 0.12s;}
+.ptable tbody tr:hover{background:rgba(240,192,64,0.04);}
+.ptable td{padding:10px 12px;vertical-align:middle;}
+.p-sub{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--red);}
+.p-obj{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--accent2);}
+.p-pos{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--green);}
+.p-posp{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--accent);}
+.p-ref{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent3);}
+.p-mar{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--orange);}
+.p-ex{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--muted);font-style:italic;}
+.p-ex em{color:var(--accent2);font-style:normal;font-weight:600;}
+.pr1 td:first-child{border-left:3px solid var(--red);}
+.pr2 td:first-child{border-left:3px solid var(--accent2);}
+.pr3 td:first-child{border-left:3px solid var(--green);}
+.pr4 td:first-child{border-left:3px solid var(--accent3);}
+.pr5 td:first-child{border-left:3px solid var(--accent);}
+.pr6 td:first-child{border-left:3px solid var(--orange);}
+.pr7 td:first-child{border-left:3px solid #70a0f0;}
+.hv-groups{display:flex;flex-direction:column;gap:20px;}
+.hv-gtitle{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;}
+.hv-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+.hvc{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;transition:border-color 0.15s;}
+.hvc:hover{border-color:var(--accent2);}
+.hvc-eng{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--accent2);line-height:1;margin-bottom:3px;}
+.hvc-mar{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--orange);margin-bottom:8px;}
+.hvc-ex{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);font-style:italic;}
+.hvc-exm{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--muted);margin-top:2px;}
+.modal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;}
+.modal-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;transition:all 0.15s;}
+.modal-card:hover{border-color:var(--accent3);transform:translateY(-1px);box-shadow:0 6px 20px rgba(192,64,240,0.1);}
+.modal-card-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;}
+.modal-eng{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--accent3);}
+.modal-mar{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--orange);}
+.modal-use{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.4;}
+.modal-examples{display:flex;flex-direction:column;gap:4px;}
+.modal-ex-eng{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);font-style:italic;}
+.modal-ex-mar{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--muted);}
+.demo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;}
+.demo-c{border-radius:12px;padding:18px 20px;border:1px solid;transition:transform 0.15s;}
+.demo-c:hover{transform:translateY(-2px);}
+.demo-near{background:rgba(64,200,240,0.07);border-color:rgba(64,200,240,0.25);}
+.demo-far{background:rgba(240,192,64,0.07);border-color:rgba(240,192,64,0.25);}
+.demo-word{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;}
+.demo-near .demo-word{color:var(--accent2);}
+.demo-far .demo-word{color:var(--accent);}
+.demo-mar{font-family:'DM Sans',sans-serif;font-size:15px;color:var(--orange);margin:4px 0;}
+.demo-rule{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:8px;}
+.demo-ex{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);font-style:italic;}
+.sva-wrap{overflow-x:auto;}
+.sva-tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.sva-tbl th{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--border);}
+.sva-tbl td{padding:10px 14px;border-bottom:1px solid rgba(37,37,56,0.4);}
+.sva-sub{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text);font-weight:500;white-space:nowrap;}
+.sva-y{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--green);}
+.sva-tbl tbody tr:hover td{background:rgba(64,240,160,0.04);}
+.builder-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin-bottom:16px;}
+.bfield{display:flex;flex-direction:column;gap:6px;}
+.blbl{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+.bfield select,.bfield input{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none;transition:border-color 0.2s;width:100%;}
+.bfield select{-webkit-appearance:none;appearance:none;background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
+.bfield select:focus,.bfield input:focus{border-color:var(--accent);}
+.bfield select option{background:var(--surface);}
+.builder-out{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;}
+.builder-out::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),var(--accent2));}
+.b-sentence{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--accent);line-height:1.3;margin-bottom:6px;}
+.b-formula{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.5px;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div>
+    <div class="header-tag">// Advanced English Learning Studio · v4.0</div>
+    <h1>इंग्रजीचा आत्मा — English Hub</h1>
+    <p class="subtitle">Sentence Generator &nbsp;·&nbsp; Pronouns &nbsp;·&nbsp; Tenses &nbsp;·&nbsp; Idioms &nbsp;·&nbsp; Phrasal Verbs &nbsp;·&nbsp; Quiz &nbsp;·&nbsp; मराठी अर्थ</p>
+  </div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Subject</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent2)"></div>Helper/Modal</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Verb</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent3)"></div>Object</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>मराठी</div>
+  </div>
+</header>
+
+<!-- NAV TABS -->
+<nav class="main-nav">
+  <button class="nav-tab active" onclick="switchTab('tab-gen',this)">✍️ Sentence Generator</button>
+  <button class="nav-tab" onclick="switchTab('tab-atma',this)">🪄 इंग्रजीचा आत्मा</button>
+  <button class="nav-tab" onclick="switchTab('tab-tenses',this)">⏱️ Tense Explorer</button>
+  <button class="nav-tab" onclick="switchTab('tab-idioms',this)">💬 Idioms</button>
+  <button class="nav-tab" onclick="switchTab('tab-phrasal',this)">🔗 Phrasal Verbs</button>
+  <button class="nav-tab" onclick="switchTab('tab-patterns',this)">📐 Sentence Patterns</button>
+  <button class="nav-tab" onclick="switchTab('tab-quiz',this)">🧠 Grammar Quiz</button>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════════ TAB 1: GENERATOR ═══════════════════════════ -->
+<div id="tab-gen" class="tab-content active">
+
+  <!-- Grammar Reference -->
+  <button class="ref-toggle-btn" id="refBtn" onclick="toggleRef()">
+    <span class="arrow">▶</span> &nbsp;व्याकरण संदर्भ (Grammar Reference Chart)
+  </button>
+  <div class="ref-panel" id="refPanel">
+    <div class="ref-header">
+      <div class="ref-header-title">📋 मराठी–English Grammar Reference</div>
+      <div class="ref-header-sub">BLACKBOARD CHART — QUICK REFERENCE</div>
+    </div>
+    <div class="ref-grid">
+      <div>
+        <div class="ref-col-title">Subjects (कर्ता)</div>
+        <ul class="ref-list">
+          <li class="ref-subhead">Singular Pronouns</li>
+          <li><span class="ref-eng">I</span><span class="ref-sep">–</span><span class="ref-mar">मी, मला, माझा</span></li>
+          <li><span class="ref-eng">He</span><span class="ref-sep">–</span><span class="ref-mar">तो, त्याला</span></li>
+          <li><span class="ref-eng">She</span><span class="ref-sep">–</span><span class="ref-mar">ती, तिला</span></li>
+          <li><span class="ref-eng">It</span><span class="ref-sep">–</span><span class="ref-mar">ते, त्याला</span></li>
+          <li class="ref-subhead">Plural Pronouns</li>
+          <li><span class="ref-eng">We</span><span class="ref-sep">–</span><span class="ref-mar">आम्ही, आम्हाला</span></li>
+          <li><span class="ref-eng">You</span><span class="ref-sep">–</span><span class="ref-mar">तू, तुला / तुम्ही</span></li>
+          <li><span class="ref-eng">They</span><span class="ref-sep">–</span><span class="ref-mar">ते, त्यांना</span></li>
+          <li class="ref-subhead">Demonstrative</li>
+          <li><span class="ref-eng">This/That</span><span class="ref-sep">–</span><span class="ref-mar">हा/हे · तो/ते</span></li>
+          <li><span class="ref-eng">These/Those</span><span class="ref-sep">–</span><span class="ref-mar">हे/ह्या · ते/त्या</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="ref-col-title">Helping Verbs (सहायक)</div>
+        <ul class="ref-list">
+          <li class="ref-subhead">To Be</li>
+          <li><span class="ref-eng">am / is</span><span class="ref-sep">–</span><span class="ref-mar">आहे</span></li>
+          <li><span class="ref-eng">are</span><span class="ref-sep">–</span><span class="ref-mar">आहेत</span></li>
+          <li><span class="ref-eng">was/were</span><span class="ref-sep">–</span><span class="ref-mar">होता/होती/होते</span></li>
+          <li class="ref-subhead">To Have</li>
+          <li><span class="ref-eng">have/has</span><span class="ref-sep">–</span><span class="ref-mar">जवळ आहे</span></li>
+          <li><span class="ref-eng">had</span><span class="ref-sep">–</span><span class="ref-mar">जवळ होते</span></li>
+          <li class="ref-subhead">To Do</li>
+          <li><span class="ref-eng">do/does</span><span class="ref-sep">–</span><span class="ref-mar">करतो/करते</span></li>
+          <li><span class="ref-eng">did</span><span class="ref-sep">–</span><span class="ref-mar">केले</span></li>
+          <li><span class="ref-eng">will</span><span class="ref-sep">–</span><span class="ref-mar">करेल</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="ref-col-title">Modal Verbs (विधी सहायक)</div>
+        <ul class="ref-list">
+          <li><span class="ref-eng">can</span><span class="ref-sep">–</span><span class="ref-mar">शकतो</span></li>
+          <li><span class="ref-eng">could</span><span class="ref-sep">–</span><span class="ref-mar">शकत होतो</span></li>
+          <li><span class="ref-eng">may</span><span class="ref-sep">–</span><span class="ref-mar">कदाचित</span></li>
+          <li><span class="ref-eng">might</span><span class="ref-sep">–</span><span class="ref-mar">कदाचित असेल</span></li>
+          <li><span class="ref-eng">must</span><span class="ref-sep">–</span><span class="ref-mar">नक्की</span></li>
+          <li><span class="ref-eng">should</span><span class="ref-sep">–</span><span class="ref-mar">पाहिजे</span></li>
+          <li><span class="ref-eng">ought to</span><span class="ref-sep">–</span><span class="ref-mar">केल पाहिजे</span></li>
+          <li><span class="ref-eng">need to</span><span class="ref-sep">–</span><span class="ref-mar">आवश्यक आहे</span></li>
+          <li><span class="ref-eng">dare to</span><span class="ref-sep">–</span><span class="ref-mar">धाडस करणे</span></li>
+          <li><span class="ref-eng">used to</span><span class="ref-sep">–</span><span class="ref-mar">करायचो</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="ref-col-title">Adjectives (विशेषण)</div>
+        <ul class="ref-list">
+          <li><span class="ref-eng">easy/hard</span><span class="ref-sep">–</span><span class="ref-mar">सोपे/कठीण</span></li>
+          <li><span class="ref-eng">happy/sad</span><span class="ref-sep">–</span><span class="ref-mar">आनंदी/दुःखी</span></li>
+          <li><span class="ref-eng">good/bad</span><span class="ref-sep">–</span><span class="ref-mar">चांगले/वाईट</span></li>
+          <li><span class="ref-eng">big/small</span><span class="ref-sep">–</span><span class="ref-mar">मोठे/लहान</span></li>
+          <li><span class="ref-eng">beautiful</span><span class="ref-sep">–</span><span class="ref-mar">सुंदर</span></li>
+          <li><span class="ref-eng">useful</span><span class="ref-sep">–</span><span class="ref-mar">उपयुक्त</span></li>
+          <li><span class="ref-eng">kind</span><span class="ref-sep">–</span><span class="ref-mar">दयाळू</span></li>
+          <li><span class="ref-eng">famous</span><span class="ref-sep">–</span><span class="ref-mar">प्रसिद्ध</span></li>
+          <li><span class="ref-eng">helpful</span><span class="ref-sep">–</span><span class="ref-mar">मदतगार</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verb Dictionary -->
+  <div class="vdict-panel">
+    <div class="vdict-header">
+      <div>
+        <div class="panel-label" style="margin-bottom:4px;">// Verb Dictionary — क्रियापद कोश</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--muted);">200 verbs with Marathi meanings — click any verb to auto-fill</div>
+      </div>
+      <div class="vdict-count"><span id="verbMatchCount">200</span> verbs</div>
+    </div>
+    <div class="vdict-search-row">
+      <div class="vsearch-wrap">
+        <span class="vsearch-icon">🔍</span>
+        <input type="text" id="verbSearch" placeholder="Search English or मराठी…" oninput="filterVerbs()" autocomplete="off"/>
+        <button class="vsearch-clear" id="verbClearBtn" onclick="clearVerbSearch()">✕</button>
+      </div>
+      <div class="vselect-wrap">
+        <select id="verbDropdown" onchange="selectVerbFromDropdown()">
+          <option value="">— Select a verb —</option>
+        </select>
+      </div>
+    </div>
+    <div class="vcard" id="verbCard" style="display:none">
+      <div class="vcard-inner">
+        <div class="vcard-main">
+          <div class="vcard-eng" id="vcEng">write</div>
+          <div class="vcard-mar" id="vcMar">लिहिणे</div>
+        </div>
+        <div class="vforms-grid">
+          <div class="vform-box"><div class="vform-lbl">V1 — Base</div><div class="vform-val" id="vcV1">—</div></div>
+          <div class="vform-box"><div class="vform-lbl">V2 — Past</div><div class="vform-val" id="vcV2">—</div></div>
+          <div class="vform-box"><div class="vform-lbl">V3 — Participle</div><div class="vform-val" id="vcV3">—</div></div>
+          <div class="vform-box"><div class="vform-lbl">V4 — Present</div><div class="vform-val" id="vcV4">—</div></div>
+        </div>
+        <button class="use-btn" onclick="useSelectedVerb()">⚡ Use &amp; Generate</button>
+      </div>
+    </div>
+    <div class="vgrid" id="verbListGrid"></div>
+  </div>
+
+  <!-- Input Panel -->
+  <div class="input-panel">
+    <div class="panel-label">// Enter Verb Forms — or select from the dictionary above</div>
+    <div class="inputs-row">
+      <div class="field"><label><span class="tag">V1</span>Base Form</label><input type="text" id="v1" placeholder="write"/></div>
+      <div class="field"><label><span class="tag">V2</span>Past Form</label><input type="text" id="v2" placeholder="wrote"/></div>
+      <div class="field"><label><span class="tag">V3</span>Past Participle</label><input type="text" id="v3" placeholder="written"/></div>
+      <div class="field"><label><span class="tag">मर</span>मराठी क्रियापद</label><input type="text" id="vmar" placeholder="लिहिणे"/></div>
+      <button class="gen-btn" onclick="generateSentences()">⚡ Generate</button>
+    </div>
+    <div class="formula-bar">
+      <span class="f-sub">Subject (कर्ता)</span><span class="f-plus">+</span>
+      <span class="f-help">Helping / Modal Verb</span><span class="f-plus">+</span>
+      <span class="f-verb">Verb (V1 / V2 / V3 / V-ing)</span><span class="f-plus">+</span>
+      <span class="f-obj">Object (कर्म)</span>
+    </div>
+  </div>
+
+  <div id="output-wrapper">
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-value" id="stat-total">0</div><div class="stat-label">Total Sentences</div></div>
+      <div class="stat"><div class="stat-value" id="stat-subjects">11</div><div class="stat-label">Subjects</div></div>
+      <div class="stat"><div class="stat-value" id="stat-per">0</div><div class="stat-label">Per Subject</div></div>
+      <div class="stat"><div class="stat-value" id="stat-tenses">0</div><div class="stat-label">Tense Patterns</div></div>
+    </div>
+    <div class="controls-row">
+      <span class="filter-label">Show:</span>
+      <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+      <button class="filter-btn" onclick="setFilter('modal',this)">Modal</button>
+      <button class="filter-btn" onclick="setFilter('helping',this)">Helping</button>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-box" placeholder="Search sentences…" oninput="renderTable()"/>
+      </div>
+      <button class="copy-btn" onclick="copyAll()">Copy All</button>
+    </div>
+    <div id="table-container"></div>
+  </div>
+  <div id="empty-state" class="empty-state">
+    <div class="empty-icon">✍️</div>
+    <div class="empty-title">Enter a verb to begin</div>
+    <div class="empty-sub">Fill V1 · V2 · V3 above and click ⚡ Generate</div>
+  </div>
+
+</div><!-- /tab-gen -->
+
+<!-- ═══════════════════════════ TAB 2: इंग्रजीचा आत्मा ═══════════════════════════ -->
+<div id="tab-atma" class="tab-content">
+  <div class="section-title">🪄 इंग्रजीचा आत्मा — The Soul of English</div>
+  <p class="section-desc">आपोआप बोलाल, लिहाल व बोलाल · Pronouns · Helping Verbs · Modals · Demonstratives · Live Sentence Builder</p>
+
+  <!-- Pronouns -->
+  <div class="atma-sec">
+    <div class="atma-head"><span class="atma-icon">👤</span>
+      <div><div class="atma-ttl">Pronoun Chart — सर्वनाम तक्ता</div>
+      <div class="atma-sub">Subject · Object · Possessive Adj. · Possessive Pro. · Reflexive · मराठी</div></div>
+    </div>
+    <div class="ptable-wrap">
+      <table class="ptable">
+        <thead><tr>
+          <th>Subject<span>कर्ता</span></th>
+          <th>Object<span>कर्म</span></th>
+          <th>Possessive Adj.<span>माझा/तुझा</span></th>
+          <th>Possessive Pro.<span>माझे/तुझे</span></th>
+          <th>Reflexive<span>स्वतः</span></th>
+          <th>मराठी अर्थ</th>
+          <th>Example</th>
+        </tr></thead>
+        <tbody>
+          <tr class="pr1"><td class="p-sub">I</td><td class="p-obj">me</td><td class="p-pos">my</td><td class="p-posp">mine</td><td class="p-ref">myself</td><td class="p-mar">मी · मला · माझा</td><td class="p-ex"><em>I</em> did it <em>myself</em>. That is <em>mine</em>.</td></tr>
+          <tr class="pr2"><td class="p-sub">You</td><td class="p-obj">you</td><td class="p-pos">your</td><td class="p-posp">yours</td><td class="p-ref">yourself</td><td class="p-mar">तू · तुला · तुझा</td><td class="p-ex">Is this <em>your</em> book? It is <em>yours</em>.</td></tr>
+          <tr class="pr3"><td class="p-sub">He</td><td class="p-obj">him</td><td class="p-pos">his</td><td class="p-posp">his</td><td class="p-ref">himself</td><td class="p-mar">तो · त्याला · त्याचा</td><td class="p-ex"><em>He</em> did it <em>himself</em>.</td></tr>
+          <tr class="pr4"><td class="p-sub">She</td><td class="p-obj">her</td><td class="p-pos">her</td><td class="p-posp">hers</td><td class="p-ref">herself</td><td class="p-mar">ती · तिला · तिचा</td><td class="p-ex">I met <em>her</em>. That is <em>hers</em>.</td></tr>
+          <tr class="pr5"><td class="p-sub">It</td><td class="p-obj">it</td><td class="p-pos">its</td><td class="p-posp">its</td><td class="p-ref">itself</td><td class="p-mar">ते · त्याला · त्याचे</td><td class="p-ex">The dog hurt <em>itself</em>.</td></tr>
+          <tr class="pr6"><td class="p-sub">We</td><td class="p-obj">us</td><td class="p-pos">our</td><td class="p-posp">ours</td><td class="p-ref">ourselves</td><td class="p-mar">आम्ही · आम्हाला · आमचा</td><td class="p-ex">They called <em>us</em>. It is <em>ours</em>.</td></tr>
+          <tr class="pr7"><td class="p-sub">They</td><td class="p-obj">them</td><td class="p-pos">their</td><td class="p-posp">theirs</td><td class="p-ref">themselves</td><td class="p-mar">ते · त्यांना · त्यांचा</td><td class="p-ex">I know <em>them</em>. That is <em>theirs</em>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Helping Verbs -->
+  <div class="atma-sec">
+    <div class="atma-head"><span class="atma-icon">🔧</span>
+      <div><div class="atma-ttl">Helping Verbs — सहायक क्रियापद</div>
+      <div class="atma-sub">am · is · are · was · were · have · has · had · do · does · did · will</div></div>
+    </div>
+    <div class="hv-groups">
+      <div><div class="hv-gtitle" style="color:var(--accent2)">TO BE — असणे</div>
+        <div class="hv-cards">
+          <div class="hvc"><div class="hvc-eng">am</div><div class="hvc-mar">आहे</div><div class="hvc-ex">I am happy.</div><div class="hvc-exm">मी आनंदी आहे.</div></div>
+          <div class="hvc"><div class="hvc-eng">is</div><div class="hvc-mar">आहे</div><div class="hvc-ex">She is smart.</div><div class="hvc-exm">ती हुशार आहे.</div></div>
+          <div class="hvc"><div class="hvc-eng">are</div><div class="hvc-mar">आहेत</div><div class="hvc-ex">They are ready.</div><div class="hvc-exm">ते तयार आहेत.</div></div>
+          <div class="hvc"><div class="hvc-eng">was</div><div class="hvc-mar">होता/होती</div><div class="hvc-ex">He was tired.</div><div class="hvc-exm">तो थकलेला होता.</div></div>
+          <div class="hvc"><div class="hvc-eng">were</div><div class="hvc-mar">होते</div><div class="hvc-ex">We were late.</div><div class="hvc-exm">आम्ही उशीरा होतो.</div></div>
+        </div>
+      </div>
+      <div><div class="hv-gtitle" style="color:var(--green)">TO HAVE — जवळ असणे</div>
+        <div class="hv-cards">
+          <div class="hvc"><div class="hvc-eng">have</div><div class="hvc-mar">जवळ आहे</div><div class="hvc-ex">I have a pen.</div><div class="hvc-exm">माझ्याजवळ पेन आहे.</div></div>
+          <div class="hvc"><div class="hvc-eng">has</div><div class="hvc-mar">जवळ आहे</div><div class="hvc-ex">She has a book.</div><div class="hvc-exm">तिच्याजवळ पुस्तक आहे.</div></div>
+          <div class="hvc"><div class="hvc-eng">had</div><div class="hvc-mar">जवळ होते</div><div class="hvc-ex">He had money.</div><div class="hvc-exm">त्याच्याजवळ पैसे होते.</div></div>
+          <div class="hvc"><div class="hvc-eng">will have</div><div class="hvc-mar">जवळ असेल</div><div class="hvc-ex">She will have time.</div><div class="hvc-exm">तिच्याजवळ वेळ असेल.</div></div>
+        </div>
+      </div>
+      <div><div class="hv-gtitle" style="color:var(--accent)">TO DO — करणे</div>
+        <div class="hv-cards">
+          <div class="hvc"><div class="hvc-eng">do</div><div class="hvc-mar">करतो/करते</div><div class="hvc-ex">I do my work.</div><div class="hvc-exm">मी माझे काम करतो.</div></div>
+          <div class="hvc"><div class="hvc-eng">does</div><div class="hvc-mar">करतो/करते</div><div class="hvc-ex">She does yoga.</div><div class="hvc-exm">ती योगा करते.</div></div>
+          <div class="hvc"><div class="hvc-eng">did</div><div class="hvc-mar">केले</div><div class="hvc-ex">He did the task.</div><div class="hvc-exm">त्याने काम केले.</div></div>
+          <div class="hvc"><div class="hvc-eng">will</div><div class="hvc-mar">असेल/करेल</div><div class="hvc-ex">She will come.</div><div class="hvc-exm">ती येईल.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Verbs -->
+  <div class="atma-sec">
+    <div class="atma-head"><span class="atma-icon">⚡</span>
+      <div><div class="atma-ttl">Modal Verbs — विधी सहायक क्रियापद</div>
+      <div class="atma-sub">can · could · may · might · must · should · will · would · shall · ought to · need to · dare to · used to</div></div>
+    </div>
+    <div class="modal-grid" id="modalGrid"></div>
+  </div>
+
+  <!-- Demonstratives -->
+  <div class="atma-sec">
+    <div class="atma-head"><span class="atma-icon">👆</span>
+      <div><div class="atma-ttl">Demonstrative Pronouns — दर्शक सर्वनाम</div>
+      <div class="atma-sub">This · That · These · Those — हा/ही/हे · तो/ती/ते</div></div>
+    </div>
+    <div class="demo-grid">
+      <div class="demo-c demo-near"><div class="demo-word">This</div><div class="demo-mar">हा / ही / हे</div><div class="demo-rule">Near + Singular · जवळचे एकवचन</div><div class="demo-ex">This is my book. → हे माझे पुस्तक आहे.</div></div>
+      <div class="demo-c demo-far"><div class="demo-word">That</div><div class="demo-mar">तो / ती / ते</div><div class="demo-rule">Far + Singular · दूरचे एकवचन</div><div class="demo-ex">That is his pen. → तो त्याचा पेन आहे.</div></div>
+      <div class="demo-c demo-near"><div class="demo-word">These</div><div class="demo-mar">हे / ह्या / ही</div><div class="demo-rule">Near + Plural · जवळचे अनेकवचन</div><div class="demo-ex">These are my books. → ही माझी पुस्तके आहेत.</div></div>
+      <div class="demo-c demo-far"><div class="demo-word">Those</div><div class="demo-mar">ते / त्या / ती</div><div class="demo-rule">Far + Plural · दूरचे अनेकवचन</div><div class="demo-ex">Those are her flowers. → त्या तिच्या फुलांच्या आहेत.</div></div>
+    </div>
+  </div>
+
+  <!-- SVA Table -->
+  <div class="atma-sec">
+    <div class="atma-head"><span class="atma-icon">📏</span>
+      <div><div class="atma-ttl">Subject–Verb Agreement — कर्ता-क्रियापद जुळणी</div>
+      <div class="atma-sub">Which helping verb goes with which subject?</div></div>
+    </div>
+    <div class="sva-wrap">
+      <table class="sva-tbl">
+        <thead><tr><th>Subject</th><th>am/is/are</th><th>was/were</th><th>have/has</th><th>do/does</th><th>will/shall</th></tr></thead>
+        <tbody>
+          <tr><td class="sva-sub">I (मी)</td><td class="sva-y">am ✓</td><td class="sva-y">was ✓</td><td class="sva-y">have ✓</td><td class="sva-y">do ✓</td><td class="sva-y">will ✓</td></tr>
+          <tr><td class="sva-sub">He / She / It</td><td class="sva-y">is ✓</td><td class="sva-y">was ✓</td><td class="sva-y">has ✓</td><td class="sva-y">does ✓</td><td class="sva-y">will ✓</td></tr>
+          <tr><td class="sva-sub">You (तू/तुम्ही)</td><td class="sva-y">are ✓</td><td class="sva-y">were ✓</td><td class="sva-y">have ✓</td><td class="sva-y">do ✓</td><td class="sva-y">will ✓</td></tr>
+          <tr><td class="sva-sub">We / They</td><td class="sva-y">are ✓</td><td class="sva-y">were ✓</td><td class="sva-y">have ✓</td><td class="sva-y">do ✓</td><td class="sva-y">will ✓</td></tr>
+          <tr><td class="sva-sub">This / That</td><td class="sva-y">is ✓</td><td class="sva-y">was ✓</td><td class="sva-y">has ✓</td><td class="sva-y">does ✓</td><td class="sva-y">will ✓</td></tr>
+          <tr><td class="sva-sub">These / Those</td><td class="sva-y">are ✓</td><td class="sva-y">were ✓</td><td class="sva-y">have ✓</td><td class="sva-y">do ✓</td><td class="sva-y">will ✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Live Builder -->
+  <div class="atma-sec">
+    <div class="atma-head"><span class="atma-icon">🧪</span>
+      <div><div class="atma-ttl">Live Sentence Builder — वाक्य तयार करा</div>
+      <div class="atma-sub">Pick Subject + Helping Verb + Verb + Object → sentence builds live!</div></div>
+    </div>
+    <div class="builder-row">
+      <div class="bfield"><div class="blbl">Subject (कर्ता)</div>
+        <select id="bSub" onchange="buildSentence()">
+          <option>I</option><option>We</option><option>You</option>
+          <option>He</option><option>She</option><option>It</option>
+          <option>They</option><option>This</option><option>That</option>
+          <option>These</option><option>Those</option>
+        </select>
+      </div>
+      <div class="bfield"><div class="blbl">Helping / Modal</div>
+        <select id="bHelp" onchange="buildSentence()">
+          <option value="am">am — आहे</option><option value="is">is — आहे</option>
+          <option value="are">are — आहेत</option><option value="was">was — होता/होती</option>
+          <option value="were">were — होते</option><option value="have">have — आहे (जवळ)</option>
+          <option value="has">has — आहे (जवळ)</option><option value="had">had — होते (जवळ)</option>
+          <option value="will">will — करेल</option><option value="can">can — शकतो</option>
+          <option value="could">could — शकत होतो</option><option value="may">may — कदाचित</option>
+          <option value="might">might — कदाचित असेल</option><option value="must">must — पाहिजेच</option>
+          <option value="should">should — पाहिजे</option><option value="would">would — करत असे</option>
+          <option value="shall">shall — करेन</option><option value="ought to">ought to — योग्य आहे</option>
+          <option value="need to">need to — आवश्यक आहे</option><option value="used to">used to — करायचो</option>
+        </select>
+      </div>
+      <div class="bfield"><div class="blbl">Verb V1 (क्रियापद)</div>
+        <input type="text" id="bVerb" value="swim" oninput="buildSentence()" placeholder="swim, run, eat…"/>
+      </div>
+      <div class="bfield"><div class="blbl">Object (कर्म)</div>
+        <input type="text" id="bObj" value="every day" oninput="buildSentence()" placeholder="a book, him, her…"/>
+      </div>
+    </div>
+    <div class="builder-out">
+      <div class="b-sentence" id="builderSentence">I can swim every day.</div>
+      <div class="b-formula" id="builderFormula">Formula: I + can + swim + every day &nbsp;|&nbsp; Meaning: शकतो</div>
+    </div>
+  </div>
+
+</div><!-- /tab-atma -->
+
+<!-- ═══════════════════════════ TAB 3: TENSES ═══════════════════════════ -->
+<div id="tab-tenses" class="tab-content">
+  <div class="section-title">⏱️ Tense Explorer — सर्व काळ (All 12 Tenses)</div>
+  <p class="section-desc">English has 12 main tenses. Each is shown with its formula, Marathi meaning, and 3 example sentences.</p>
+  <div class="tense-grid" id="tenseGrid"></div>
+</div>
+
+<!-- ═══════════════════════════ TAB 4: IDIOMS ═══════════════════════════ -->
+<div id="tab-idioms" class="tab-content">
+  <div class="section-title">💬 Common English Idioms — म्हणी व वाक्प्रचार</div>
+  <p class="section-desc">Idioms are fixed phrases whose meaning differs from the individual words. Learn 60 essential idioms with Marathi meaning!</p>
+  <div class="adv-search-row">
+    <div class="vsearch-wrap" style="max-width:380px">
+      <span class="vsearch-icon">🔍</span>
+      <input type="text" id="idiomSearch" placeholder="Search idiom or मराठी अर्थ…" oninput="filterIdioms()"/>
+    </div>
+    <div class="count-badge" id="idiomCount">60 idioms</div>
+  </div>
+  <div class="idiom-grid" id="idiomGrid"></div>
+</div>
+
+<!-- ═══════════════════════════ TAB 5: PHRASAL ═══════════════════════════ -->
+<div id="tab-phrasal" class="tab-content">
+  <div class="section-title">🔗 Phrasal Verbs — क्रियापद समूह</div>
+  <p class="section-desc">Phrasal verbs = verb + preposition/adverb → new meaning! Master 60 essential ones with Marathi meaning.</p>
+  <div class="adv-search-row">
+    <div class="vsearch-wrap" style="max-width:380px">
+      <span class="vsearch-icon">🔍</span>
+      <input type="text" id="phrasalSearch" placeholder="Search phrasal verb or meaning…" oninput="filterPhrasal()"/>
+    </div>
+    <div class="count-badge" id="phrasalCount">60 phrasal verbs</div>
+  </div>
+  <div class="phrasal-grid" id="phrasalGrid"></div>
+</div>
+
+<!-- ═══════════════════════════ TAB 6: PATTERNS ═══════════════════════════ -->
+<div id="tab-patterns" class="tab-content">
+  <div class="section-title">📐 Advanced Sentence Patterns — वाक्य रचना</div>
+  <p class="section-desc">Learn 8 key sentence structure types used in advanced English writing and conversation.</p>
+  <div class="pattern-grid" id="patternGrid"></div>
+</div>
+
+<!-- ═══════════════════════════ TAB 7: QUIZ ═══════════════════════════ -->
+<div id="tab-quiz" class="tab-content">
+  <div class="section-title">🧠 Grammar Quiz — व्याकरण सराव</div>
+  <p class="section-desc">Test your English grammar knowledge! 20 questions covering tenses, modals, passive voice, conditionals and more.</p>
+  <div id="quizContainer"></div>
+</div>
+
+</main>
+
+<script>
+/* ════════════════════════════════════════════════════════
+   DATA: SUBJECTS
+════════════════════════════════════════════════════════ */
+const SUBJECTS = [
+  {word:'I',     mar:'मी',         marObj:'मला',    gender:'m', be:{pr:'am', pa:'was'}, hv:{pr:'have'}, doV:{pr:'do',  pa:'did'}},
+  {word:'We',    mar:'आम्ही',      marObj:'आम्हाला',gender:'p', be:{pr:'are',pa:'were'},hv:{pr:'have'}, doV:{pr:'do',  pa:'did'}},
+  {word:'You',   mar:'तू/तुम्ही', marObj:'तुला',   gender:'p', be:{pr:'are',pa:'were'},hv:{pr:'have'}, doV:{pr:'do',  pa:'did'}},
+  {word:'He',    mar:'तो',         marObj:'त्याला', gender:'m', be:{pr:'is', pa:'was'}, hv:{pr:'has'},  doV:{pr:'does',pa:'did'}},
+  {word:'She',   mar:'ती',         marObj:'तिला',   gender:'f', be:{pr:'is', pa:'was'}, hv:{pr:'has'},  doV:{pr:'does',pa:'did'}},
+  {word:'It',    mar:'ते',         marObj:'त्याला', gender:'n', be:{pr:'is', pa:'was'}, hv:{pr:'has'},  doV:{pr:'does',pa:'did'}},
+  {word:'They',  mar:'ते सर्व',    marObj:'त्यांना',gender:'p', be:{pr:'are',pa:'were'},hv:{pr:'have'}, doV:{pr:'do',  pa:'did'}},
+  {word:'This',  mar:'हा/ही/हे',   marObj:'याला',   gender:'n', be:{pr:'is', pa:'was'}, hv:{pr:'has'},  doV:{pr:'does',pa:'did'}},
+  {word:'That',  mar:'तो/ती/ते',   marObj:'त्याला', gender:'n', be:{pr:'is', pa:'was'}, hv:{pr:'has'},  doV:{pr:'does',pa:'did'}},
+  {word:'These', mar:'हे/ह्या/ही', marObj:'यांना',  gender:'p', be:{pr:'are',pa:'were'},hv:{pr:'have'}, doV:{pr:'do',  pa:'did'}},
+  {word:'Those', mar:'ते/त्या/ती', marObj:'त्यांना',gender:'p', be:{pr:'are',pa:'were'},hv:{pr:'have'}, doV:{pr:'do',  pa:'did'}},
+];
+const SAFE_PRN = {I:['him','her','them','you','us'],We:['him','her','them','you','it'],You:['him','her','them','us','it'],He:['me','her','them','you','us'],She:['me','him','them','you','us'],It:['me','him','her','them','you'],They:['me','him','her','you','us'],This:['me','him','her','them','you'],That:['me','him','her','them','us'],These:['me','him','her','them','you'],Those:['me','him','her','you','us']};
+const MAR_PRN = {me:'मला',us:'आम्हाला',you:'तुला',him:'त्याला',her:'तिला',it:'त्याला',them:'त्यांना'};
+const NOUN_OBJ = ['a letter','a book','a story','a flower','a pen','a mobile','a watch','food','water','music','the school','the teacher'];
+const ADJECTIVES = [{eng:'easy',mar:'सोपे'},{eng:'hard',mar:'कठीण'},{eng:'old',mar:'जुने'},{eng:'happy',mar:'आनंदी'},{eng:'sad',mar:'दुःखी'},{eng:'good',mar:'चांगले'},{eng:'bad',mar:'वाईट'},{eng:'small',mar:'लहान'},{eng:'big',mar:'मोठे'},{eng:'beautiful',mar:'सुंदर'},{eng:'useful',mar:'उपयुक्त'},{eng:'kind',mar:'दयाळू'},{eng:'famous',mar:'प्रसिद्ध'},{eng:'helpful',mar:'मदतगार'},{eng:'red',mar:'लाल'}];
+
+/* ════════════════════════════════════════════════════════
+   SENTENCE ENGINE
+════════════════════════════════════════════════════════ */
+function makeVing(v){
+  if(v.endsWith('ie'))return v.slice(0,-2)+'ying';
+  if(v.endsWith('e')&&!v.endsWith('ee'))return v.slice(0,-1)+'ing';
+  const m=v.match(/^(.*[aeiou])([bcdfghjklmnpqrstvwxyz])$/);
+  if(m&&v.length<=5)return v+v[v.length-1]+'ing';
+  return v+'ing';
+}
+function build(s,h,v,o){return (h?[s,h,v,o]:[s,v,o]).join(' ')+'.';}
+function marEnd(g,r){if(g==='f')return r+'ते';if(g==='p')return r+'तात';return r+'तो';}
+
+function getTemplates(sub,v1,v2,v3,ving,vmar){
+  const s=sub.word,sm=sub.mar.split('/')[0],g=sub.gender;
+  const pr=SAFE_PRN[s]||['him','her','them','you','us'];
+  const BP=sub.be.pr,BA=sub.be.pa,HV=sub.hv.pr;
+  const vr=vmar?vmar.replace(/णे$/,''):'';
+  const p=i=>pr[i%pr.length];
+  const mp=i=>MAR_PRN[p(i)]||p(i);
+  const n=i=>NOUN_OBJ[i%NOUN_OBJ.length];
+  const adj=i=>ADJECTIVES[i%ADJECTIVES.length];
+  const mar=(sb,ob,vp)=>vmar?`${sb} ${ob} ${vp}.`:'';
+  return [
+    {eng:build(s,'',v1,n(0)),mar:mar(sm,n(0),vr?marEnd(g,vr):''),tense:'Simple Present (साधा वर्तमान)',type:'helping',helper:sub.doV.pr},
+    {eng:build(s,'',v2,n(1)),mar:mar(sm,n(1),vr?vr+'ले':''),tense:'Simple Past (साधा भूतकाळ)',type:'helping',helper:'did'},
+    {eng:build(s,BP,ving,n(2)),mar:mar(sm,n(2),vr?vr+'त आहे':''),tense:'Present Continuous (चालू वर्तमान)',type:'helping',helper:BP},
+    {eng:build(s,BA,ving,p(0)),mar:mar(sm,mp(0),vr?vr+'त होतो/होती':''),tense:'Past Continuous (चालू भूतकाळ)',type:'helping',helper:BA},
+    {eng:build(s,HV,v3,n(3)),mar:mar(sm,n(3),vr?vr+'ले आहे':''),tense:'Present Perfect (पूर्ण वर्तमान)',type:'helping',helper:HV},
+    {eng:build(s,'had',v3,p(1)),mar:mar(sm,mp(1),vr?vr+'ले होते':''),tense:'Past Perfect (पूर्ण भूतकाळ)',type:'helping',helper:'had'},
+    {eng:build(s,'will',v1,n(4)),mar:mar(sm,n(4),vr?vr+'ईल':''),tense:'Future - will (भविष्यकाळ)',type:'modal',helper:'will'},
+    {eng:build(s,'can',v1,p(2)),mar:mar(sm,mp(2),vr?vr+' शकतो/शकते':''),tense:'Ability - can (शकतो)',type:'modal',helper:'can'},
+    {eng:build(s,'should',v1,n(5)),mar:mar(sm,n(5),vr?vr+'णे पाहिजे':''),tense:'Advice - should (पाहिजे)',type:'modal',helper:'should'},
+    {eng:build(s,'used to',v1,p(3)),mar:vmar?`${sm} आधी ${mp(3)} ${vr}त असे.`:'',tense:'Past Habit - used to (करायचो)',type:'modal',helper:'used to'},
+    {eng:build(s,'must',v1,n(6)),mar:mar(sm,n(6),vr?vr+'च पाहिजे':''),tense:'Obligation - must (पाहिजेच)',type:'modal',helper:'must'},
+    {eng:build(s,'may',v1,n(7)),mar:mar(sm,n(7),vr?'कदाचित '+vr+'ईल':''),tense:'Possibility - may (कदाचित)',type:'modal',helper:'may'},
+    {eng:`${s} ${BP} ${adj(0).eng}.`,mar:`${sm} ${adj(0).mar} आहे/आहेत.`,tense:'Adj: To Be + Adjective (विशेषण)',type:'helping',helper:BP},
+    {eng:`${s} ${BA} ${adj(1).eng}.`,mar:`${sm} ${adj(1).mar} होता/होती.`,tense:'Adj: Past + Adjective',type:'helping',helper:BA},
+    {eng:build(s,'will',v1,'the teacher'),mar:mar(sm,'शिक्षकाला',vr?vr+'ईल':''),tense:'Future + Noun Object (will)',type:'modal',helper:'will'},
+  ];
+}
+
+let allSentences=[], currentFilter='all';
+
+function generateSentences(){
+  const v1=document.getElementById('v1').value.trim().toLowerCase();
+  const v2=document.getElementById('v2').value.trim().toLowerCase()||v1+'ed';
+  const v3=document.getElementById('v3').value.trim().toLowerCase()||v2;
+  const vmar=document.getElementById('vmar').value.trim();
+  if(!v1){alert('Please enter V1 (base form) of the verb.');return;}
+  const ving=makeVing(v1);
+  allSentences=[];
+  SUBJECTS.forEach(sub=>getTemplates(sub,v1,v2,v3,ving,vmar).forEach(t=>allSentences.push({subject:sub.word,subMar:sub.mar,...t})));
+  currentFilter='all';
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.filter-btn')[0].classList.add('active');
+  document.getElementById('search-box').value='';
+  renderTable();
+}
+
+const HLP_SET=new Set(['am','is','are','was','were','have','has','had','do','does','did','will','would','shall','should','can','could','may','might','must','ought','need','dare','used','been','being','to','not']);
+
+function colorise(eng){
+  const tok=eng.replace(/\.$/,'').split(' ');
+  const out=[]; let i=0;
+  out.push(`<span class="w-sub">${tok[i++]}</span>`);
+  while(i<tok.length-1&&HLP_SET.has(tok[i].toLowerCase()))out.push(`<span class="w-help">${tok[i++]}</span>`);
+  if(i<tok.length)out.push(`<span class="w-verb">${tok[i++]}</span>`);
+  while(i<tok.length)out.push(`<span class="w-obj">${tok[i++]}</span>`);
+  return out.join(' ')+'.';
+}
+
+function getFiltered(){
+  let list=allSentences;
+  if(currentFilter!=='all')list=list.filter(s=>s.type===currentFilter);
+  const q=document.getElementById('search-box').value.trim().toLowerCase();
+  if(q)list=list.filter(s=>s.eng.toLowerCase().includes(q)||s.tense.toLowerCase().includes(q)||s.subject.toLowerCase().includes(q));
+  return list;
+}
+
+function renderTable(){
+  const filtered=getFiltered();
+  const wrapper=document.getElementById('output-wrapper');
+  const empty=document.getElementById('empty-state');
+  const container=document.getElementById('table-container');
+  if(!allSentences.length){wrapper.classList.remove('visible');empty.style.display='block';return;}
+  wrapper.classList.add('visible');empty.style.display='none';
+  const tSet=new Set(allSentences.map(s=>s.tense));
+  document.getElementById('stat-total').textContent=filtered.length;
+  document.getElementById('stat-subjects').textContent=SUBJECTS.length;
+  document.getElementById('stat-per').textContent=Math.round(allSentences.length/SUBJECTS.length);
+  document.getElementById('stat-tenses').textContent=tSet.size;
+  const groups={};
+  SUBJECTS.forEach(sub=>{groups[sub.word]=[];});
+  filtered.forEach(s=>{if(groups[s.subject])groups[s.subject].push(s);});
+  let html='<div class="master-table-wrap"><table class="master-table">';
+  html+=`<thead><tr><th>#</th><th>Subject</th><th>English Sentence</th><th>मराठी अर्थ</th><th>Tense / Pattern</th><th>Type</th><th>Helper</th></tr></thead><tbody>`;
+  let num=1,hasAny=false;
+  SUBJECTS.forEach(sub=>{
+    const grp=groups[sub.word];
+    if(!grp||!grp.length)return;
+    hasAny=true;
+    html+=`<tr class="group-header"><td colspan="7"><div class="subject-pill"><span class="subject-word">${sub.word}</span><span class="subject-mar">${sub.mar}</span></div></td></tr>`;
+    grp.forEach(s=>{
+      html+=`<tr><td class="row-num">${num++}</td><td class="subject-word" style="font-size:13px;color:var(--red)">${s.subject}</td><td class="eng-cell">${colorise(s.eng)}</td><td class="mar-text">${s.mar||'—'}</td><td class="tense-text">${s.tense}</td><td><span class="type-badge type-${s.type}">${s.type}</span></td><td><span class="helper-tag">${s.helper}</span></td></tr>`;
+    });
+  });
+  if(!hasAny)html+=`<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:12px;">No results found</td></tr>`;
+  html+='</tbody></table></div>';
+  container.innerHTML=html;
+}
+
+function setFilter(type,btn){
+  currentFilter=type;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function copyAll(){
+  const text=getFiltered().map(s=>s.eng+(s.mar?'  →  '+s.mar:'')).join('\n');
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.querySelector('.copy-btn');
+    btn.textContent='✓ Copied!';btn.style.color='var(--green)';btn.style.borderColor='var(--green)';
+    setTimeout(()=>{btn.textContent='Copy All';btn.style.color='';btn.style.borderColor='';},2000);
+  });
+}
+
+function toggleRef(){
+  const p=document.getElementById('refPanel'),b=document.getElementById('refBtn');
+  const o=p.classList.toggle('open');
+  b.classList.toggle('open',o);
+}
+
+/* ════════════════════════════════════════════════════════
+   VERB DICTIONARY DATA (200 verbs)
+════════════════════════════════════════════════════════ */
+const VERB_DICT=[
+  {no:1,v1:'Accept',v2:'Accepted',v3:'Accepted',v4:'Accepting',mar:'स्वीकारणे'},{no:2,v1:'Add',v2:'Added',v3:'Added',v4:'Adding',mar:'जोडणे'},{no:3,v1:'Ask',v2:'Asked',v3:'Asked',v4:'Asking',mar:'विचारणे'},{no:4,v1:'Answer',v2:'Answered',v3:'Answered',v4:'Answering',mar:'उत्तर देणे'},{no:5,v1:'Arrive',v2:'Arrived',v3:'Arrived',v4:'Arriving',mar:'पोहोचणे'},
+  {no:6,v1:'Bake',v2:'Baked',v3:'Baked',v4:'Baking',mar:'भाजणे'},{no:7,v1:'Begin',v2:'Began',v3:'Begun',v4:'Beginning',mar:'सुरू करणे'},{no:8,v1:'Break',v2:'Broke',v3:'Broken',v4:'Breaking',mar:'तोडणे'},{no:9,v1:'Bring',v2:'Brought',v3:'Brought',v4:'Bringing',mar:'आणणे'},{no:10,v1:'Build',v2:'Built',v3:'Built',v4:'Building',mar:'बांधणे'},
+  {no:11,v1:'Buy',v2:'Bought',v3:'Bought',v4:'Buying',mar:'खरेदी करणे'},{no:12,v1:'Call',v2:'Called',v3:'Called',v4:'Calling',mar:'बोलावणे'},{no:13,v1:'Carry',v2:'Carried',v3:'Carried',v4:'Carrying',mar:'वाहून नेणे'},{no:14,v1:'Catch',v2:'Caught',v3:'Caught',v4:'Catching',mar:'पकडणे'},{no:15,v1:'Choose',v2:'Chose',v3:'Chosen',v4:'Choosing',mar:'निवडणे'},
+  {no:16,v1:'Clean',v2:'Cleaned',v3:'Cleaned',v4:'Cleaning',mar:'स्वच्छ करणे'},{no:17,v1:'Climb',v2:'Climbed',v3:'Climbed',v4:'Climbing',mar:'चढणे'},{no:18,v1:'Come',v2:'Came',v3:'Come',v4:'Coming',mar:'येणे'},{no:19,v1:'Cook',v2:'Cooked',v3:'Cooked',v4:'Cooking',mar:'स्वयंपाक करणे'},{no:20,v1:'Copy',v2:'Copied',v3:'Copied',v4:'Copying',mar:'नक्कल करणे'},
+  {no:21,v1:'Cut',v2:'Cut',v3:'Cut',v4:'Cutting',mar:'कापणे'},{no:22,v1:'Dance',v2:'Danced',v3:'Danced',v4:'Dancing',mar:'नाचणे'},{no:23,v1:'Decide',v2:'Decided',v3:'Decided',v4:'Deciding',mar:'निर्णय घेणे'},{no:24,v1:'Deliver',v2:'Delivered',v3:'Delivered',v4:'Delivering',mar:'पोहोचवणे'},{no:25,v1:'Describe',v2:'Described',v3:'Described',v4:'Describing',mar:'वर्णन करणे'},
+  {no:26,v1:'Develop',v2:'Developed',v3:'Developed',v4:'Developing',mar:'विकसित करणे'},{no:27,v1:'Do',v2:'Did',v3:'Done',v4:'Doing',mar:'करणे'},{no:28,v1:'Draw',v2:'Drew',v3:'Drawn',v4:'Drawing',mar:'चित्र काढणे'},{no:29,v1:'Drink',v2:'Drank',v3:'Drunk',v4:'Drinking',mar:'पिणे'},{no:30,v1:'Drive',v2:'Drove',v3:'Driven',v4:'Driving',mar:'वाहन चालवणे'},
+  {no:31,v1:'Eat',v2:'Ate',v3:'Eaten',v4:'Eating',mar:'खाणे'},{no:32,v1:'Explain',v2:'Explained',v3:'Explained',v4:'Explaining',mar:'समजावणे'},{no:33,v1:'Fall',v2:'Fell',v3:'Fallen',v4:'Falling',mar:'पडणे'},{no:34,v1:'Feel',v2:'Felt',v3:'Felt',v4:'Feeling',mar:'अनुभवणे'},{no:35,v1:'Fight',v2:'Fought',v3:'Fought',v4:'Fighting',mar:'लढणे'},
+  {no:36,v1:'Find',v2:'Found',v3:'Found',v4:'Finding',mar:'शोधणे'},{no:37,v1:'Finish',v2:'Finished',v3:'Finished',v4:'Finishing',mar:'पूर्ण करणे'},{no:38,v1:'Fly',v2:'Flew',v3:'Flown',v4:'Flying',mar:'उडणे'},{no:39,v1:'Forget',v2:'Forgot',v3:'Forgotten',v4:'Forgetting',mar:'विसरणे'},{no:40,v1:'Forgive',v2:'Forgave',v3:'Forgiven',v4:'Forgiving',mar:'माफ करणे'},
+  {no:41,v1:'Get',v2:'Got',v3:'Got',v4:'Getting',mar:'मिळणे'},{no:42,v1:'Give',v2:'Gave',v3:'Given',v4:'Giving',mar:'देणे'},{no:43,v1:'Go',v2:'Went',v3:'Gone',v4:'Going',mar:'जाणे'},{no:44,v1:'Grow',v2:'Grew',v3:'Grown',v4:'Growing',mar:'वाढणे'},{no:45,v1:'Hang',v2:'Hung',v3:'Hung',v4:'Hanging',mar:'लटकवणे'},
+  {no:46,v1:'Have',v2:'Had',v3:'Had',v4:'Having',mar:'असणे'},{no:47,v1:'Hear',v2:'Heard',v3:'Heard',v4:'Hearing',mar:'ऐकणे'},{no:48,v1:'Help',v2:'Helped',v3:'Helped',v4:'Helping',mar:'मदत करणे'},{no:49,v1:'Hide',v2:'Hid',v3:'Hidden',v4:'Hiding',mar:'लपवणे'},{no:50,v1:'Hold',v2:'Held',v3:'Held',v4:'Holding',mar:'धरून ठेवणे'},
+  {no:51,v1:'Keep',v2:'Kept',v3:'Kept',v4:'Keeping',mar:'ठेवणे'},{no:52,v1:'Know',v2:'Knew',v3:'Known',v4:'Knowing',mar:'माहित असणे'},{no:53,v1:'Learn',v2:'Learnt',v3:'Learnt',v4:'Learning',mar:'शिकणे'},{no:54,v1:'Leave',v2:'Left',v3:'Left',v4:'Leaving',mar:'सोडणे'},{no:55,v1:'Lend',v2:'Lent',v3:'Lent',v4:'Lending',mar:'उसने देणे'},
+  {no:56,v1:'Let',v2:'Let',v3:'Let',v4:'Letting',mar:'परवानगी देणे'},{no:57,v1:'Like',v2:'Liked',v3:'Liked',v4:'Liking',mar:'आवडणे'},{no:58,v1:'Live',v2:'Lived',v3:'Lived',v4:'Living',mar:'राहणे'},{no:59,v1:'Look',v2:'Looked',v3:'Looked',v4:'Looking',mar:'पाहणे'},{no:60,v1:'Lose',v2:'Lost',v3:'Lost',v4:'Losing',mar:'हरवणे'},
+  {no:61,v1:'Make',v2:'Made',v3:'Made',v4:'Making',mar:'बनवणे'},{no:62,v1:'Meet',v2:'Met',v3:'Met',v4:'Meeting',mar:'भेटणे'},{no:63,v1:'Move',v2:'Moved',v3:'Moved',v4:'Moving',mar:'हलवणे'},{no:64,v1:'Need',v2:'Needed',v3:'Needed',v4:'Needing',mar:'गरज असणे'},{no:65,v1:'Open',v2:'Opened',v3:'Opened',v4:'Opening',mar:'उघडणे'},
+  {no:66,v1:'Order',v2:'Ordered',v3:'Ordered',v4:'Ordering',mar:'ऑर्डर देणे'},{no:67,v1:'Pay',v2:'Paid',v3:'Paid',v4:'Paying',mar:'पैसे देणे'},{no:68,v1:'Play',v2:'Played',v3:'Played',v4:'Playing',mar:'खेळणे'},{no:69,v1:'Prepare',v2:'Prepared',v3:'Prepared',v4:'Preparing',mar:'तयार करणे'},{no:70,v1:'Pull',v2:'Pulled',v3:'Pulled',v4:'Pulling',mar:'ओढणे'},
+  {no:71,v1:'Push',v2:'Pushed',v3:'Pushed',v4:'Pushing',mar:'ढकलणे'},{no:72,v1:'Put',v2:'Put',v3:'Put',v4:'Putting',mar:'ठेवणे'},{no:73,v1:'Read',v2:'Read',v3:'Read',v4:'Reading',mar:'वाचणे'},{no:74,v1:'Receive',v2:'Received',v3:'Received',v4:'Receiving',mar:'घेणे'},{no:75,v1:'Remember',v2:'Remembered',v3:'Remembered',v4:'Remembering',mar:'आठवणे'},
+  {no:76,v1:'Repair',v2:'Repaired',v3:'Repaired',v4:'Repairing',mar:'दुरुस्ती करणे'},{no:77,v1:'Return',v2:'Returned',v3:'Returned',v4:'Returning',mar:'परत येणे'},{no:78,v1:'Ride',v2:'Rode',v3:'Ridden',v4:'Riding',mar:'स्वार होणे'},{no:79,v1:'Ring',v2:'Rang',v3:'Rung',v4:'Ringing',mar:'वाजणे'},{no:80,v1:'Run',v2:'Ran',v3:'Run',v4:'Running',mar:'धावणे'},
+  {no:81,v1:'Say',v2:'Said',v3:'Said',v4:'Saying',mar:'सांगणे'},{no:82,v1:'See',v2:'Saw',v3:'Seen',v4:'Seeing',mar:'पाहणे'},{no:83,v1:'Sell',v2:'Sold',v3:'Sold',v4:'Selling',mar:'विकणे'},{no:84,v1:'Send',v2:'Sent',v3:'Sent',v4:'Sending',mar:'पाठवणे'},{no:85,v1:'Set',v2:'Set',v3:'Set',v4:'Setting',mar:'ठेवणे'},
+  {no:86,v1:'Shake',v2:'Shook',v3:'Shaken',v4:'Shaking',mar:'हलवणे'},{no:87,v1:'Show',v2:'Showed',v3:'Shown',v4:'Showing',mar:'दाखवणे'},{no:88,v1:'Shut',v2:'Shut',v3:'Shut',v4:'Shutting',mar:'बंद करणे'},{no:89,v1:'Sing',v2:'Sang',v3:'Sung',v4:'Singing',mar:'गाणे'},{no:90,v1:'Sit',v2:'Sat',v3:'Sat',v4:'Sitting',mar:'बसणे'},
+  {no:91,v1:'Sleep',v2:'Slept',v3:'Slept',v4:'Sleeping',mar:'झोपणे'},{no:92,v1:'Speak',v2:'Spoke',v3:'Spoken',v4:'Speaking',mar:'बोलणे'},{no:93,v1:'Spend',v2:'Spent',v3:'Spent',v4:'Spending',mar:'खर्च करणे'},{no:94,v1:'Stand',v2:'Stood',v3:'Stood',v4:'Standing',mar:'उभे राहणे'},{no:95,v1:'Start',v2:'Started',v3:'Started',v4:'Starting',mar:'सुरू करणे'},
+  {no:96,v1:'Stay',v2:'Stayed',v3:'Stayed',v4:'Staying',mar:'थांबणे'},{no:97,v1:'Stop',v2:'Stopped',v3:'Stopped',v4:'Stopping',mar:'थांबवणे'},{no:98,v1:'Study',v2:'Studied',v3:'Studied',v4:'Studying',mar:'अभ्यास करणे'},{no:99,v1:'Take',v2:'Took',v3:'Taken',v4:'Taking',mar:'घेणे'},{no:100,v1:'Talk',v2:'Talked',v3:'Talked',v4:'Talking',mar:'बोलणे'},
+  {no:101,v1:'Teach',v2:'Taught',v3:'Taught',v4:'Teaching',mar:'शिकवणे'},{no:102,v1:'Tell',v2:'Told',v3:'Told',v4:'Telling',mar:'सांगणे'},{no:103,v1:'Think',v2:'Thought',v3:'Thought',v4:'Thinking',mar:'विचार करणे'},{no:104,v1:'Throw',v2:'Threw',v3:'Thrown',v4:'Throwing',mar:'फेकणे'},{no:105,v1:'Touch',v2:'Touched',v3:'Touched',v4:'Touching',mar:'स्पर्श करणे'},
+  {no:106,v1:'Travel',v2:'Travelled',v3:'Travelled',v4:'Travelling',mar:'प्रवास करणे'},{no:107,v1:'Try',v2:'Tried',v3:'Tried',v4:'Trying',mar:'प्रयत्न करणे'},{no:108,v1:'Turn',v2:'Turned',v3:'Turned',v4:'Turning',mar:'वळणे'},{no:109,v1:'Understand',v2:'Understood',v3:'Understood',v4:'Understanding',mar:'समजणे'},{no:110,v1:'Use',v2:'Used',v3:'Used',v4:'Using',mar:'वापरणे'},
+  {no:111,v1:'Wait',v2:'Waited',v3:'Waited',v4:'Waiting',mar:'वाट पाहणे'},{no:112,v1:'Wake',v2:'Woke',v3:'Woken',v4:'Waking',mar:'जागे होणे'},{no:113,v1:'Walk',v2:'Walked',v3:'Walked',v4:'Walking',mar:'चालणे'},{no:114,v1:'Wash',v2:'Washed',v3:'Washed',v4:'Washing',mar:'धुणे'},{no:115,v1:'Watch',v2:'Watched',v3:'Watched',v4:'Watching',mar:'पाहणे'},
+  {no:116,v1:'Wear',v2:'Wore',v3:'Worn',v4:'Wearing',mar:'घालणे'},{no:117,v1:'Win',v2:'Won',v3:'Won',v4:'Winning',mar:'जिंकणे'},{no:118,v1:'Wish',v2:'Wished',v3:'Wished',v4:'Wishing',mar:'इच्छा करणे'},{no:119,v1:'Work',v2:'Worked',v3:'Worked',v4:'Working',mar:'काम करणे'},{no:120,v1:'Write',v2:'Wrote',v3:'Written',v4:'Writing',mar:'लिहिणे'},
+  {no:121,v1:'Abandon',v2:'Abandoned',v3:'Abandoned',v4:'Abandoning',mar:'त्याग करणे'},{no:122,v1:'Admire',v2:'Admired',v3:'Admired',v4:'Admiring',mar:'कौतुक करणे'},{no:123,v1:'Admit',v2:'Admitted',v3:'Admitted',v4:'Admitting',mar:'मान्य करणे'},{no:124,v1:'Adopt',v2:'Adopted',v3:'Adopted',v4:'Adopting',mar:'स्वीकारणे'},{no:125,v1:'Advise',v2:'Advised',v3:'Advised',v4:'Advising',mar:'सल्ला देणे'},
+  {no:126,v1:'Agree',v2:'Agreed',v3:'Agreed',v4:'Agreeing',mar:'सहमत होणे'},{no:127,v1:'Allow',v2:'Allowed',v3:'Allowed',v4:'Allowing',mar:'परवानगी देणे'},{no:128,v1:'Announce',v2:'Announced',v3:'Announced',v4:'Announcing',mar:'घोषणा करणे'},{no:129,v1:'Appear',v2:'Appeared',v3:'Appeared',v4:'Appearing',mar:'दिसणे'},{no:130,v1:'Apply',v2:'Applied',v3:'Applied',v4:'Applying',mar:'अर्ज करणे'},
+  {no:131,v1:'Appreciate',v2:'Appreciated',v3:'Appreciated',v4:'Appreciating',mar:'कदर करणे'},{no:132,v1:'Arrange',v2:'Arranged',v3:'Arranged',v4:'Arranging',mar:'व्यवस्था करणे'},{no:133,v1:'Attach',v2:'Attached',v3:'Attached',v4:'Attaching',mar:'जोडणे'},{no:134,v1:'Attack',v2:'Attacked',v3:'Attacked',v4:'Attacking',mar:'हल्ला करणे'},{no:135,v1:'Attempt',v2:'Attempted',v3:'Attempted',v4:'Attempting',mar:'प्रयत्न करणे'},
+  {no:136,v1:'Avoid',v2:'Avoided',v3:'Avoided',v4:'Avoiding',mar:'टाळणे'},{no:137,v1:'Behave',v2:'Behaved',v3:'Behaved',v4:'Behaving',mar:'वागणे'},{no:138,v1:'Believe',v2:'Believed',v3:'Believed',v4:'Believing',mar:'विश्वास ठेवणे'},{no:139,v1:'Belong',v2:'Belonged',v3:'Belonged',v4:'Belonging',mar:'संबंध असणे'},{no:140,v1:'Blame',v2:'Blamed',v3:'Blamed',v4:'Blaming',mar:'दोष देणे'},
+  {no:141,v1:'Borrow',v2:'Borrowed',v3:'Borrowed',v4:'Borrowing',mar:'उसने घेणे'},{no:142,v1:'Breathe',v2:'Breathed',v3:'Breathed',v4:'Breathing',mar:'श्वास घेणे'},{no:143,v1:'Brush',v2:'Brushed',v3:'Brushed',v4:'Brushing',mar:'घासणे'},{no:144,v1:'Calculate',v2:'Calculated',v3:'Calculated',v4:'Calculating',mar:'गणना करणे'},{no:145,v1:'Care',v2:'Cared',v3:'Cared',v4:'Caring',mar:'काळजी घेणे'},
+  {no:146,v1:'Change',v2:'Changed',v3:'Changed',v4:'Changing',mar:'बदलणे'},{no:147,v1:'Charge',v2:'Charged',v3:'Charged',v4:'Charging',mar:'शुल्क घेणे'},{no:148,v1:'Check',v2:'Checked',v3:'Checked',v4:'Checking',mar:'तपासणे'},{no:149,v1:'Collect',v2:'Collected',v3:'Collected',v4:'Collecting',mar:'गोळा करणे'},{no:150,v1:'Compare',v2:'Compared',v3:'Compared',v4:'Comparing',mar:'तुलना करणे'},
+  {no:151,v1:'Complain',v2:'Complained',v3:'Complained',v4:'Complaining',mar:'तक्रार करणे'},{no:152,v1:'Complete',v2:'Completed',v3:'Completed',v4:'Completing',mar:'पूर्ण करणे'},{no:153,v1:'Confirm',v2:'Confirmed',v3:'Confirmed',v4:'Confirming',mar:'पुष्टी करणे'},{no:154,v1:'Connect',v2:'Connected',v3:'Connected',v4:'Connecting',mar:'जोडणे'},{no:155,v1:'Consider',v2:'Considered',v3:'Considered',v4:'Considering',mar:'विचार करणे'},
+  {no:156,v1:'Continue',v2:'Continued',v3:'Continued',v4:'Continuing',mar:'सुरू ठेवणे'},{no:157,v1:'Control',v2:'Controlled',v3:'Controlled',v4:'Controlling',mar:'नियंत्रण ठेवणे'},{no:158,v1:'Correct',v2:'Corrected',v3:'Corrected',v4:'Correcting',mar:'दुरुस्त करणे'},{no:159,v1:'Create',v2:'Created',v3:'Created',v4:'Creating',mar:'तयार करणे'},{no:160,v1:'Damage',v2:'Damaged',v3:'Damaged',v4:'Damaging',mar:'नुकसान करणे'},
+  {no:161,v1:'Deal',v2:'Dealt',v3:'Dealt',v4:'Dealing',mar:'व्यवहार करणे'},{no:162,v1:'Depend',v2:'Depended',v3:'Depended',v4:'Depending',mar:'अवलंबून असणे'},{no:163,v1:'Destroy',v2:'Destroyed',v3:'Destroyed',v4:'Destroying',mar:'नष्ट करणे'},{no:164,v1:'Discover',v2:'Discovered',v3:'Discovered',v4:'Discovering',mar:'शोध लावणे'},{no:165,v1:'Discuss',v2:'Discussed',v3:'Discussed',v4:'Discussing',mar:'चर्चा करणे'},
+  {no:166,v1:'Divide',v2:'Divided',v3:'Divided',v4:'Dividing',mar:'विभागणे'},{no:167,v1:'Doubt',v2:'Doubted',v3:'Doubted',v4:'Doubting',mar:'संशय घेणे'},{no:168,v1:'Earn',v2:'Earned',v3:'Earned',v4:'Earning',mar:'कमावणे'},{no:169,v1:'Encourage',v2:'Encouraged',v3:'Encouraged',v4:'Encouraging',mar:'प्रोत्साहन देणे'},{no:170,v1:'Enjoy',v2:'Enjoyed',v3:'Enjoyed',v4:'Enjoying',mar:'आनंद घेणे'},
+  {no:171,v1:'Enter',v2:'Entered',v3:'Entered',v4:'Entering',mar:'प्रवेश करणे'},{no:172,v1:'Escape',v2:'Escaped',v3:'Escaped',v4:'Escaping',mar:'पळून जाणे'},{no:173,v1:'Examine',v2:'Examined',v3:'Examined',v4:'Examining',mar:'तपासणे'},{no:174,v1:'Exist',v2:'Existed',v3:'Existed',v4:'Existing',mar:'अस्तित्व असणे'},{no:175,v1:'Expand',v2:'Expanded',v3:'Expanded',v4:'Expanding',mar:'विस्तार करणे'},
+  {no:176,v1:'Expect',v2:'Expected',v3:'Expected',v4:'Expecting',mar:'अपेक्षा करणे'},{no:177,v1:'Experience',v2:'Experienced',v3:'Experienced',v4:'Experiencing',mar:'अनुभव घेणे'},{no:178,v1:'Fail',v2:'Failed',v3:'Failed',v4:'Failing',mar:'अपयशी होणे'},{no:179,v1:'Fix',v2:'Fixed',v3:'Fixed',v4:'Fixing',mar:'दुरुस्त करणे'},{no:180,v1:'Follow',v2:'Followed',v3:'Followed',v4:'Following',mar:'पाठलाग करणे'},
+  {no:181,v1:'Force',v2:'Forced',v3:'Forced',v4:'Forcing',mar:'जबरदस्ती करणे'},{no:182,v1:'Form',v2:'Formed',v3:'Formed',v4:'Forming',mar:'तयार करणे'},{no:183,v1:'Gain',v2:'Gained',v3:'Gained',v4:'Gaining',mar:'मिळवणे'},{no:184,v1:'Guess',v2:'Guessed',v3:'Guessed',v4:'Guessing',mar:'अंदाज लावणे'},{no:185,v1:'Handle',v2:'Handled',v3:'Handled',v4:'Handling',mar:'हाताळणे'},
+  {no:186,v1:'Happen',v2:'Happened',v3:'Happened',v4:'Happening',mar:'घडणे'},{no:187,v1:'Hate',v2:'Hated',v3:'Hated',v4:'Hating',mar:'तिरस्कार करणे'},{no:188,v1:'Imagine',v2:'Imagined',v3:'Imagined',v4:'Imagining',mar:'कल्पना करणे'},{no:189,v1:'Improve',v2:'Improved',v3:'Improved',v4:'Improving',mar:'सुधारणे'},{no:190,v1:'Include',v2:'Included',v3:'Included',v4:'Including',mar:'समाविष्ट करणे'},
+  {no:191,v1:'Increase',v2:'Increased',v3:'Increased',v4:'Increasing',mar:'वाढवणे'},{no:192,v1:'Influence',v2:'Influenced',v3:'Influenced',v4:'Influencing',mar:'प्रभाव टाकणे'},{no:193,v1:'Inform',v2:'Informed',v3:'Informed',v4:'Informing',mar:'माहिती देणे'},{no:194,v1:'Invite',v2:'Invited',v3:'Invited',v4:'Inviting',mar:'आमंत्रण देणे'},{no:195,v1:'Join',v2:'Joined',v3:'Joined',v4:'Joining',mar:'सामील होणे'},
+  {no:196,v1:'Judge',v2:'Judged',v3:'Judged',v4:'Judging',mar:'न्याय करणे'},{no:197,v1:'Jump',v2:'Jumped',v3:'Jumped',v4:'Jumping',mar:'उडी मारणे'},{no:198,v1:'Kick',v2:'Kicked',v3:'Kicked',v4:'Kicking',mar:'लाथ मारणे'},{no:199,v1:'Kill',v2:'Killed',v3:'Killed',v4:'Killing',mar:'मारणे'},{no:200,v1:'Knock',v2:'Knocked',v3:'Knocked',v4:'Knocking',mar:'टकटक करणे'},
+];
+
+let filteredVerbs=[...VERB_DICT], selectedVerbIdx=null;
+
+function initVerbDict(){renderVerbGrid(VERB_DICT);populateDropdown(VERB_DICT);}
+function populateDropdown(list){
+  const sel=document.getElementById('verbDropdown');
+  sel.innerHTML='<option value="">— Select a verb —</option>';
+  list.forEach(v=>{const o=document.createElement('option');o.value=v.no;o.textContent=`${v.no}. ${v.v1} — ${v.mar}`;sel.appendChild(o);});
+}
+function renderVerbGrid(list){
+  document.getElementById('verbMatchCount').textContent=list.length;
+  const g=document.getElementById('verbListGrid');
+  if(!list.length){g.innerHTML='<div class="no-res">🔍 No verbs found — कोणतेही क्रियापद सापडले नाही</div>';return;}
+  g.innerHTML=list.map(v=>`<div class="vchip ${selectedVerbIdx===v.no?'sel':''}" onclick="selectVerb(${v.no})" title="${v.v1}/${v.v2}/${v.v3}"><div><span class="vchip-num">${v.no}.</span><span class="vchip-eng">${v.v1}</span></div><div class="vchip-mar">${v.mar}</div></div>`).join('');
+}
+function filterVerbs(){
+  const q=document.getElementById('verbSearch').value.trim().toLowerCase();
+  document.getElementById('verbClearBtn').classList.toggle('show',q.length>0);
+  filteredVerbs=q?VERB_DICT.filter(v=>v.v1.toLowerCase().includes(q)||v.v2.toLowerCase().includes(q)||v.v3.toLowerCase().includes(q)||v.v4.toLowerCase().includes(q)||v.mar.includes(q)):[...VERB_DICT];
+  renderVerbGrid(filteredVerbs);populateDropdown(filteredVerbs);
+}
+function clearVerbSearch(){
+  document.getElementById('verbSearch').value='';
+  document.getElementById('verbClearBtn').classList.remove('show');
+  filteredVerbs=[...VERB_DICT];renderVerbGrid(filteredVerbs);populateDropdown(filteredVerbs);
+}
+function selectVerb(no){
+  selectedVerbIdx=no;
+  const v=VERB_DICT.find(x=>x.no===no);if(!v)return;
+  document.getElementById('vcEng').textContent=v.v1;
+  document.getElementById('vcMar').textContent=v.mar;
+  document.getElementById('vcV1').textContent=v.v1;
+  document.getElementById('vcV2').textContent=v.v2;
+  document.getElementById('vcV3').textContent=v.v3;
+  document.getElementById('vcV4').textContent=v.v4;
+  document.getElementById('verbCard').style.display='block';
+  document.getElementById('verbDropdown').value=no;
+  renderVerbGrid(filteredVerbs);
+  document.getElementById('verbCard').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function selectVerbFromDropdown(){const no=parseInt(document.getElementById('verbDropdown').value);if(no)selectVerb(no);}
+function useSelectedVerb(){
+  if(!selectedVerbIdx)return;
+  const v=VERB_DICT.find(x=>x.no===selectedVerbIdx);if(!v)return;
+  document.getElementById('v1').value=v.v1.toLowerCase();
+  document.getElementById('v2').value=v.v2.toLowerCase();
+  document.getElementById('v3').value=v.v3.toLowerCase();
+  document.getElementById('vmar').value=v.mar;
+  document.getElementById('v1').scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(()=>generateSentences(),300);
+}
+
+/* ════════════════════════════════════════════════════════
+   TAB SWITCH
+════════════════════════════════════════════════════════ */
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ════════════════════════════════════════════════════════
+   MODAL VERBS DATA
+════════════════════════════════════════════════════════ */
+const MODAL_DATA=[
+  {eng:'can',mar:'शकतो / शकते',use:'Ability — क्षमता दर्शवणे',e1:'I can swim.',e1m:'मी पोहू शकतो.',e2:'She can speak English.',e2m:'ती इंग्रजी बोलू शकते.'},
+  {eng:'could',mar:'शकत होतो / होती',use:'Past ability / Polite request',e1:'He could run fast.',e1m:'तो वेगाने धावू शकत होता.',e2:'Could you help me?',e2m:'तुम्ही मला मदत करू शकता का?'},
+  {eng:'may',mar:'कदाचित / परवानगी',use:'Permission / Possibility',e1:'You may go now.',e1m:'तुम्ही आता जाऊ शकता.',e2:'It may rain today.',e2m:'आज पाऊस पडू शकतो.'},
+  {eng:'might',mar:'कदाचित असेल',use:'Weaker possibility — कमी शक्यता',e1:'She might come.',e1m:'ती कदाचित येईल.',e2:'It might be true.',e2m:'हे कदाचित खरे असेल.'},
+  {eng:'must',mar:'पाहिजेच / नक्कीच',use:'Obligation / Strong deduction',e1:'You must study daily.',e1m:'तुम्ही रोज अभ्यास केलाच पाहिजे.',e2:'He must be tired.',e2m:'तो नक्कीच थकलेला असेल.'},
+  {eng:'should',mar:'पाहिजे (सल्ला)',use:'Advice / Recommendation — सल्ला',e1:'You should eat fruits.',e1m:'तुम्ही फळे खावीत.',e2:'She should rest today.',e2m:'तिने आज आराम करावा.'},
+  {eng:'will',mar:'करेल / असेल',use:'Future intention / Promise',e1:'I will help you.',e1m:'मी तुम्हाला मदत करेन.',e2:'She will win.',e2m:'ती जिंकेल.'},
+  {eng:'would',mar:'करत असे / करेन (नम्र)',use:'Past habit / Polite request',e1:'He would play here.',e1m:'तो इथे खेळत असे.',e2:'Would you like tea?',e2m:'तुम्हाला चहा हवा का?'},
+  {eng:'shall',mar:'करेन / करू (औपचारिक)',use:'Formal future / Offers',e1:'I shall return.',e1m:'मी परत येईन.',e2:'Shall we begin?',e2m:'आपण सुरुवात करू का?'},
+  {eng:'ought to',mar:'योग्य आहे / पाहिजे',use:'Moral obligation — नैतिक बंधन',e1:'You ought to respect elders.',e1m:'तुम्ही वडीलधाऱ्यांचा आदर केला पाहिजे.',e2:'He ought to apologize.',e2m:'त्याने माफी मागितली पाहिजे.'},
+  {eng:'need to',mar:'आवश्यक आहे',use:'Necessity — गरज असणे',e1:'I need to sleep.',e1m:'मला झोपणे आवश्यक आहे.',e2:'You need to practice.',e2m:'तुम्हाला सराव करणे आवश्यक आहे.'},
+  {eng:'dare to',mar:'धाडस करणे',use:'Courage to do something',e1:'She dares to speak truth.',e1m:'ती सत्य बोलण्याचे धाडस करते.',e2:'Do you dare to try?',e2m:'तुम्ही प्रयत्न करण्याचे धाडस करता का?'},
+  {eng:'used to',mar:'करायचो / करायची',use:'Past habit (no longer) — जुनी सवय',e1:'I used to wake early.',e1m:'मी पूर्वी लवकर उठायचो.',e2:'She used to sing songs.',e2m:'ती पूर्वी गाणी गायची.'},
+];
+
+function renderModalGrid(){
+  const g=document.getElementById('modalGrid');if(!g)return;
+  g.innerHTML=MODAL_DATA.map(m=>`<div class="modal-c"><div class="modal-ch"><div class="modal-eng">${m.eng}</div><div class="modal-mar">${m.mar}</div></div><div class="modal-use">📌 ${m.use}</div><div class="modal-exs"><div><div class="modal-ee">${m.e1}</div><div class="modal-em">${m.e1m}</div></div><div style="margin-top:5px"><div class="modal-ee">${m.e2}</div><div class="modal-em">${m.e2m}</div></div></div></div>`).join('');
+}
+
+const HLP_MAR={am:'आहे',is:'आहे',are:'आहेत',was:'होता/होती',were:'होते',have:'जवळ आहे',has:'जवळ आहे',had:'जवळ होते','will have':'जवळ असेल',will:'करेल',do:'करतो',does:'करते',did:'केले',can:'शकतो',could:'शकत होतो',may:'कदाचित',might:'कदाचित असेल',must:'पाहिजेच',should:'पाहिजे',would:'करत असे',shall:'करेन','ought to':'योग्य आहे','need to':'आवश्यक आहे','used to':'करायचो'};
+
+function buildSentence(){
+  const sub=document.getElementById('bSub').value;
+  const help=document.getElementById('bHelp').value;
+  const verb=document.getElementById('bVerb').value.trim()||'swim';
+  const obj=document.getElementById('bObj').value.trim()||'';
+  const sent=[sub,help,verb,obj].filter(Boolean).join(' ')+'.';
+  document.getElementById('builderSentence').textContent=sent;
+  document.getElementById('builderFormula').textContent=`Formula: ${sub} + ${help} + ${verb}${obj?' + '+obj:''}   |   Meaning: ${HLP_MAR[help]||''}`;
+}
+
+/* ════════════════════════════════════════════════════════
+   TENSES DATA
+════════════════════════════════════════════════════════ */
+const TENSES=[
+  {name:'Simple Present',mar:'साधा वर्तमान काळ',color:'#40c8f0',formula:'Subject + V1 (s/es for He/She/It)',use:'Habits, facts, routines',usemar:'सवयी, सत्य गोष्टी',examples:[{eng:'She reads a book every day.',mar:'ती रोज एक पुस्तक वाचते.'},{eng:'The sun rises in the east.',mar:'सूर्य पूर्वेला उगवतो.'},{eng:'He plays cricket on Sundays.',mar:'तो रविवारी क्रिकेट खेळतो.'}]},
+  {name:'Present Continuous',mar:'चालू वर्तमान काळ',color:'#40f0a0',formula:'Subject + am/is/are + V1-ing',use:'Action happening right now',usemar:'आत्ता चालू असलेली क्रिया',examples:[{eng:'She is reading a book now.',mar:'ती आत्ता पुस्तक वाचत आहे.'},{eng:'They are playing cricket.',mar:'ते क्रिकेट खेळत आहेत.'},{eng:'I am learning English.',mar:'मी इंग्रजी शिकत आहे.'}]},
+  {name:'Present Perfect',mar:'पूर्ण वर्तमान काळ',color:'#f0c040',formula:'Subject + have/has + V3',use:'Action completed but relevant now',usemar:'नुकतीच पूर्ण झालेली क्रिया',examples:[{eng:'She has read that book.',mar:'तिने ते पुस्तक वाचले आहे.'},{eng:'I have eaten my lunch.',mar:'मी माझे जेवण केले आहे.'},{eng:'He has gone to school.',mar:'तो शाळेत गेला आहे.'}]},
+  {name:'Present Perfect Continuous',mar:'चालू पूर्ण वर्तमान काळ',color:'#c040f0',formula:'Subject + have/has + been + V1-ing',use:'Action started in past, still continuing',usemar:'भूतकाळात सुरू, अजून चालू',examples:[{eng:'She has been reading for 2 hours.',mar:'ती २ तासांपासून वाचत आहे.'},{eng:'I have been working since morning.',mar:'मी सकाळपासून काम करत आहे.'},{eng:'They have been playing all day.',mar:'ते सारा दिवस खेळत आहेत.'}]},
+  {name:'Simple Past',mar:'साधा भूतकाळ',color:'#f07070',formula:'Subject + V2',use:'Completed action in past',usemar:'भूतकाळातील पूर्ण झालेली क्रिया',examples:[{eng:'She read a book yesterday.',mar:'तिने काल एक पुस्तक वाचले.'},{eng:'He went to Mumbai last week.',mar:'तो मागच्या आठवड्यात मुंबईला गेला.'},{eng:'I ate rice for lunch.',mar:'मी जेवणात भात खाल्ला.'}]},
+  {name:'Past Continuous',mar:'चालू भूतकाळ',color:'#f0a060',formula:'Subject + was/were + V1-ing',use:'Ongoing action at a past time',usemar:'भूतकाळात चालू असलेली क्रिया',examples:[{eng:'She was reading when I called.',mar:'मी फोन केला तेव्हा ती वाचत होती.'},{eng:'They were playing at 5 pm.',mar:'ते ५ वाजता खेळत होते.'},{eng:'I was sleeping when it rained.',mar:'पाऊस पडला तेव्हा मी झोपत होतो.'}]},
+  {name:'Past Perfect',mar:'पूर्ण भूतकाळ',color:'#70a0f0',formula:'Subject + had + V3',use:'Action completed before another past action',usemar:'दुसऱ्या क्रियेपूर्वी पूर्ण झालेली',examples:[{eng:'She had read the book before class.',mar:'वर्गाआधी तिने पुस्तक वाचले होते.'},{eng:'He had left before I arrived.',mar:'मी येण्यापूर्वी तो निघून गेला होता.'},{eng:'They had eaten before we came.',mar:'आम्ही येण्यापूर्वी त्यांनी जेवण केले होते.'}]},
+  {name:'Past Perfect Continuous',mar:'चालू पूर्ण भूतकाळ',color:'#a0f070',formula:'Subject + had been + V1-ing',use:'Ongoing action before a past moment',usemar:'भूतकाळातील क्षणापूर्वी चालू असलेली',examples:[{eng:'She had been studying for 3 hours.',mar:'ती ३ तासांपासून अभ्यास करत होती.'},{eng:'He had been running before he fell.',mar:'पडण्यापूर्वी तो धावत होता.'},{eng:'I had been waiting since morning.',mar:'मी सकाळपासून वाट पाहत होतो.'}]},
+  {name:'Simple Future',mar:'साधा भविष्यकाळ',color:'#40c8f0',formula:'Subject + will + V1',use:'Actions that will happen in future',usemar:'भविष्यात होणाऱ्या क्रिया',examples:[{eng:'She will read the book tomorrow.',mar:'ती उद्या पुस्तक वाचेल.'},{eng:'I will go to school on Monday.',mar:'मी सोमवारी शाळेत जाईन.'},{eng:'They will play the final match.',mar:'ते अंतिम सामना खेळतील.'}]},
+  {name:'Future Continuous',mar:'चालू भविष्यकाळ',color:'#40f0a0',formula:'Subject + will be + V1-ing',use:'Ongoing action at a future time',usemar:'भविष्यात एखाद्या वेळी चालू असणारी',examples:[{eng:'She will be reading at 6 pm.',mar:'ती ६ वाजता वाचत असेल.'},{eng:'I will be sleeping when you arrive.',mar:'तुम्ही आल्यावर मी झोपत असेन.'},{eng:'They will be playing when it rains.',mar:'पाऊस पडेल तेव्हा ते खेळत असतील.'}]},
+  {name:'Future Perfect',mar:'पूर्ण भविष्यकाळ',color:'#f0c040',formula:'Subject + will have + V3',use:'Action completed before a future time',usemar:'भविष्यातील वेळेपूर्वी पूर्ण होणारी',examples:[{eng:'She will have read by tonight.',mar:'आज रात्रीपर्यंत ती वाचून घेईल.'},{eng:'I will have finished by 5 pm.',mar:'संध्याकाळी ५ पर्यंत मी काम संपवेन.'},{eng:'He will have left before you arrive.',mar:'तुम्ही येण्यापूर्वी तो निघून गेलेला असेल.'}]},
+  {name:'Future Perfect Continuous',mar:'चालू पूर्ण भविष्यकाळ',color:'#c040f0',formula:'Subject + will have been + V1-ing',use:'Ongoing action up to a future point',usemar:'भविष्यातील क्षणापर्यंत चालू असणारी',examples:[{eng:'She will have been reading for 2 hours by noon.',mar:'दुपारपर्यंत ती २ तास वाचत राहिलेली असेल.'},{eng:'I will have been working for 5 years by 2026.',mar:'२०२६ पर्यंत मी ५ वर्षे काम करत राहिलेलो असेन.'},{eng:'He will have been sleeping for 10 hours.',mar:'तो १० तास झोपत राहिलेला असेल.'}]},
+];
+
+function renderTenses(){
+  const g=document.getElementById('tenseGrid');if(!g)return;
+  g.innerHTML=TENSES.map((t,i)=>`<div class="tense-card"><div class="tense-card-head"><div class="tense-name" style="color:${t.color}">${i+1}. ${t.name}</div><div class="tense-name-mar">${t.mar}</div><div style="font-size:12px;color:var(--muted);margin-top:4px;font-family:'DM Sans',sans-serif;">📌 ${t.use} | <span style="color:var(--orange)">${t.usemar}</span></div></div><div class="tense-formula">${t.formula}</div><div class="tense-examples">${t.examples.map(e=>`<div class="tense-ex">${e.eng}<span>${e.mar}</span></div>`).join('')}</div></div>`).join('');
+}
+
+/* ════════════════════════════════════════════════════════
+   IDIOMS DATA (60)
+════════════════════════════════════════════════════════ */
+const IDIOMS=[
+  {phrase:'Break the ice',mar:'संकोच दूर करणे',meaning:'Start a conversation in an awkward situation',ex:'He told a joke to break the ice.'},
+  {phrase:'Hit the nail on the head',mar:'बरोबर सांगणे',meaning:'Say something exactly right',ex:'You hit the nail on the head with that answer.'},
+  {phrase:'Bite the bullet',mar:'कठीण गोष्ट सहन करणे',meaning:'Endure a painful situation',ex:'She bit the bullet and went to the dentist.'},
+  {phrase:'Spill the beans',mar:'गुपित उघड करणे',meaning:'Reveal secret information',ex:"Don't spill the beans about the surprise party!"},
+  {phrase:'Under the weather',mar:'आजारी असणे',meaning:'Feeling ill or unwell',ex:'I am feeling under the weather today.'},
+  {phrase:'Once in a blue moon',mar:'क्वचितच',meaning:'Very rarely',ex:'He visits us once in a blue moon.'},
+  {phrase:'Burn the midnight oil',mar:'रात्री उशिरापर्यंत काम करणे',meaning:'Work late into the night',ex:'She burned the midnight oil to finish the project.'},
+  {phrase:'Let the cat out of the bag',mar:'चुकून सांगणे',meaning:'Accidentally reveal a secret',ex:'He let the cat out of the bag about the wedding.'},
+  {phrase:'Cost an arm and a leg',mar:'खूप महाग असणे',meaning:'Very expensive',ex:'That new phone costs an arm and a leg.'},
+  {phrase:'Hit the books',mar:'अभ्यास करणे',meaning:'Start studying seriously',ex:'I need to hit the books for the exam.'},
+  {phrase:'On the ball',mar:'सतर्क असणे',meaning:'Alert and efficient',ex:'She is always on the ball at work.'},
+  {phrase:'Kick the bucket',mar:'मरण पावणे (विनोदी)',meaning:'To die (humorous)',ex:'The old car finally kicked the bucket.'},
+  {phrase:'Hit the sack',mar:'झोपणे',meaning:'Go to bed',ex:"I'm exhausted. Time to hit the sack."},
+  {phrase:'Piece of cake',mar:'खूप सोपे',meaning:'Something very easy',ex:'The test was a piece of cake for her.'},
+  {phrase:'Beat around the bush',mar:'घोळ घालणे',meaning:'Avoid getting to the main point',ex:"Stop beating around the bush and tell me."},
+  {phrase:'Bite the dust',mar:'हरणे / पडणे',meaning:'Fail or be defeated',ex:'Our team bit the dust in the semifinals.'},
+  {phrase:'Burn bridges',mar:'संबंध तोडणे',meaning:'Permanently damage a relationship',ex:"Don't burn bridges with your old employer."},
+  {phrase:'Catch someone red-handed',mar:'रंगेहात पकडणे',meaning:'Catch someone in the act',ex:'The thief was caught red-handed.'},
+  {phrase:'Cry over spilled milk',mar:'झाल्या गोष्टीची काळजी करणे',meaning:'Worry about past mistakes',ex:"It's done now. Don't cry over spilled milk."},
+  {phrase:'Every cloud has a silver lining',mar:'प्रत्येक संकटात संधी असते',meaning:'Every bad situation has a good aspect',ex:'We lost but learned a lot. Every cloud has a silver lining.'},
+  {phrase:'Face the music',mar:'परिणाम स्वीकारणे',meaning:'Accept the consequences',ex:'You made the mistake, now face the music.'},
+  {phrase:'Get out of hand',mar:'नियंत्रणाबाहेर जाणे',meaning:'Become out of control',ex:'The situation got out of hand quickly.'},
+  {phrase:'Go back to the drawing board',mar:'पुन्हा सुरुवात करणे',meaning:'Start over from the beginning',ex:'The plan failed, so we went back to the drawing board.'},
+  {phrase:'Hit the ground running',mar:'लगेच सुरुवात करणे',meaning:'Start with great energy',ex:'She hit the ground running in her new job.'},
+  {phrase:'In the heat of the moment',mar:'रागाच्या भरात',meaning:'While in an emotional state',ex:'He said something harsh in the heat of the moment.'},
+  {phrase:'Jump on the bandwagon',mar:'लोकप्रिय गोष्टींत सामील होणे',meaning:'Follow a popular trend',ex:'Everyone jumped on the bandwagon with that diet.'},
+  {phrase:'Keep your chin up',mar:'धीर ठेवणे',meaning:'Stay positive in difficulty',ex:'Keep your chin up — things will get better.'},
+  {phrase:'Leave no stone unturned',mar:'सर्व प्रयत्न करणे',meaning:'Try every possible option',ex:'She left no stone unturned to find her ring.'},
+  {phrase:'Miss the boat',mar:'संधी गमावणे',meaning:'Miss an opportunity',ex:'He missed the boat by waiting too long.'},
+  {phrase:'No pain, no gain',mar:'कष्टाशिवाय यश नाही',meaning:'Work hard to achieve success',ex:'No pain, no gain — keep practicing daily.'},
+  {phrase:'On thin ice',mar:'धोकादायक स्थितीत असणे',meaning:'In a risky situation',ex:"You're on thin ice with these late submissions."},
+  {phrase:"Pull someone's leg",mar:'थट्टा करणे',meaning:'Tease or joke with someone',ex:"I was just pulling your leg — it wasn't serious."},
+  {phrase:'See eye to eye',mar:'एकमत असणे',meaning:'Agree with someone',ex:'We see eye to eye on most issues.'},
+  {phrase:'Take with a grain of salt',mar:'संशयाने घेणे',meaning:'Be sceptical about something',ex:'Take his stories with a grain of salt.'},
+  {phrase:'The last straw',mar:'सहनशक्तीची सीमा',meaning:'The final problem making it unbearable',ex:'That rude comment was the last straw for me.'},
+  {phrase:'Throw in the towel',mar:'हार मानणे',meaning:'Give up or admit defeat',ex:'After years of trying, he threw in the towel.'},
+  {phrase:'Wrap your head around',mar:'समजून घेणे',meaning:'Understand something complicated',ex:"I can't wrap my head around quantum physics."},
+  {phrase:"You can't judge a book by its cover",mar:'बाह्यरूपावरून मत बनवू नये',meaning:"Don't judge by appearance alone",ex:"Don't judge a book by its cover — he's very talented."},
+  {phrase:'Ahead of the curve',mar:'पुढारलेला असणे',meaning:'More advanced than others',ex:'Our company is always ahead of the curve.'},
+  {phrase:'Back to square one',mar:'परत सुरुवातीस',meaning:'Starting over after a failure',ex:'The deal fell through, so we are back to square one.'},
+  {phrase:'Cut corners',mar:'कमी प्रयत्नात काम करणे',meaning:'Do something poorly to save time',ex:"Don't cut corners on safety."},
+  {phrase:'Drop the ball',mar:'चूक करणे',meaning:'Make a mistake',ex:'He really dropped the ball on that presentation.'},
+  {phrase:'Go the extra mile',mar:'अतिरिक्त प्रयत्न करणे',meaning:'Put in more effort than expected',ex:'She always goes the extra mile for her students.'},
+  {phrase:'In the long run',mar:'दीर्घकालीन दृष्टीने',meaning:'Over a long period of time',ex:'Healthy habits pay off in the long run.'},
+  {phrase:'Jump the gun',mar:'घाईत निर्णय घेणे',meaning:'Act too soon',ex:"Don't jump the gun — wait for the announcement."},
+  {phrase:'Kill two birds with one stone',mar:'एकाच वेळी दोन कामे करणे',meaning:'Solve two problems with one action',ex:'I killed two birds with one stone by shopping and visiting dad.'},
+  {phrase:'Look before you leap',mar:'विचार करूनच पाऊल टाका',meaning:'Think carefully before acting',ex:'Look before you leap when investing money.'},
+  {phrase:'On the fence',mar:'तटस्थ असणे',meaning:'Undecided about something',ex:"I'm still on the fence about which college to choose."},
+  {phrase:'Pull strings',mar:'वशिला वापरणे',meaning:'Use influence to get something',ex:'He pulled strings to get the job.'},
+  {phrase:'Speak of the devil',mar:'नाव घ्यायचा अवकाश',meaning:'Said when someone appears as you mention them',ex:'Speak of the devil — here comes Ravi!'},
+  {phrase:'The tip of the iceberg',mar:'समस्येचा छोटा भाग',meaning:'A small visible part of a larger problem',ex:'This argument is just the tip of the iceberg.'},
+  {phrase:'Turn over a new leaf',mar:'नवी सुरुवात करणे',meaning:'Change behaviour for the better',ex:'He turned over a new leaf after leaving bad company.'},
+  {phrase:'Up in the air',mar:'अनिश्चित',meaning:'Uncertain or undecided',ex:'Our vacation plans are still up in the air.'},
+  {phrase:'Barking up the wrong tree',mar:'चुकीचा मार्ग घेणे',meaning:'Looking in wrong place',ex:"You're barking up the wrong tree; I didn't take it."},
+  {phrase:"Under someone's thumb",mar:'कोणाच्या ताब्यात असणे',meaning:'Controlled by someone',ex:"He is completely under his boss's thumb."},
+  {phrase:'Give the benefit of the doubt',mar:'विश्वास ठेवणे',meaning:'Trust despite uncertainty',ex:'I gave him the benefit of the doubt this time.'},
+  {phrase:'Let sleeping dogs lie',mar:'जुन्या गोष्टींना उगाळू नये',meaning:'Avoid bringing up past problems',ex:"Let sleeping dogs lie and don't mention the old fight."},
+  {phrase:'Get a taste of your own medicine',mar:'स्वतःच्याच कृत्याचा फटका',meaning:'Experience what you do to others',ex:'He got a taste of his own medicine when lied to.'},
+  {phrase:'Zip your lip',mar:'गप्प बसणे',meaning:'Keep quiet',ex:'Can you zip your lip about the surprise?'},
+  {phrase:"Bite more than you can chew",mar:'क्षमतेपेक्षा जास्त घेणे',meaning:'Take on more than you can handle',ex:"Don't bite off more than you can chew."},
+  {phrase:'Under the table',mar:'लपून-छपून / लाच',meaning:'Done secretly or illegally',ex:'They paid the official under the table.'},
+];
+
+let filteredIdioms=[...IDIOMS];
+function renderIdioms(list){
+  const g=document.getElementById('idiomGrid');if(!g)return;
+  const c=document.getElementById('idiomCount');if(c)c.textContent=list.length+' idioms';
+  g.innerHTML=list.map(id=>`<div class="idiom-card"><div class="idiom-phrase">"${id.phrase}"</div><div class="idiom-mar">🌺 ${id.mar}</div><div class="idiom-meaning">📖 ${id.meaning}</div><div class="idiom-example">💬 ${id.ex}</div></div>`).join('');
+}
+function filterIdioms(){
+  const q=document.getElementById('idiomSearch').value.trim().toLowerCase();
+  filteredIdioms=q?IDIOMS.filter(i=>i.phrase.toLowerCase().includes(q)||i.mar.includes(q)||i.meaning.toLowerCase().includes(q)):[...IDIOMS];
+  renderIdioms(filteredIdioms);
+}
+
+/* ════════════════════════════════════════════════════════
+   PHRASAL VERBS DATA (60)
+════════════════════════════════════════════════════════ */
+const PHRASAL_VERBS=[
+  {verb:'Break up',mar:'तोडणे / विभाजन',meaning:'End a relationship or split apart',ex:'They broke up after two years.'},
+  {verb:'Break down',mar:'बिघडणे / रडणे',meaning:"Machine stops; or someone cries",ex:'The car broke down on the highway.'},
+  {verb:'Break out',mar:'सुटका / अचानक सुरू',meaning:'Escape or suddenly begin',ex:'A fire broke out in the building.'},
+  {verb:'Bring up',mar:'वाढवणे / विषय काढणे',meaning:'Raise a child; or mention a topic',ex:'She brought up an interesting point.'},
+  {verb:'Call off',mar:'रद्द करणे',meaning:'Cancel something',ex:'They called off the match due to rain.'},
+  {verb:'Call on',mar:'भेट देणे / विचारणे',meaning:'Visit; or ask someone to respond',ex:'The teacher called on him to answer.'},
+  {verb:'Carry on',mar:'चालू ठेवणे',meaning:'Continue doing something',ex:'Carry on with your work.'},
+  {verb:'Catch up',mar:'मागे राहिलेले पूर्ण',meaning:'Reach the same level as others',ex:'I need to catch up on my studies.'},
+  {verb:'Come across',mar:'अचानक मिळणे',meaning:'Find by chance',ex:'I came across an old photo today.'},
+  {verb:'Come up with',mar:'कल्पना सुचणे',meaning:'Think of an idea or solution',ex:'She came up with a brilliant plan.'},
+  {verb:'Cut down on',mar:'कमी करणे',meaning:'Reduce the amount',ex:'He cut down on sugar for his health.'},
+  {verb:'Deal with',mar:'सामना करणे',meaning:'Handle or cope with',ex:'How do you deal with stress at work?'},
+  {verb:'Drop out',mar:'सोडून जाणे',meaning:'Leave course before finishing',ex:'He dropped out of college.'},
+  {verb:'End up',mar:'शेवटी होणे',meaning:'Finally be in a situation',ex:'We ended up eating at a roadside stall.'},
+  {verb:'Fall apart',mar:'विखुरणे / कोसळणे',meaning:'Break into pieces; collapse',ex:'The old book fell apart when I opened it.'},
+  {verb:'Figure out',mar:'समजून घेणे',meaning:'Understand or solve',ex:'I finally figured out the math problem.'},
+  {verb:'Get along',mar:'जमणे / मैत्री',meaning:'Have a good relationship',ex:'We get along very well with our neighbours.'},
+  {verb:'Get over',mar:'सावरणे',meaning:'Recover from disappointment',ex:'It took time to get over the bad news.'},
+  {verb:'Give up',mar:'हार मानणे',meaning:'Stop trying; surrender',ex:"Don't give up on your dreams."},
+  {verb:'Go ahead',mar:'पुढे जाणे',meaning:'Proceed with something',ex:'You may go ahead with the presentation.'},
+  {verb:'Go through',mar:'सहन करणे',meaning:'Experience difficulty',ex:'She went through a lot of hardship.'},
+  {verb:'Grow up',mar:'मोठे होणे',meaning:'Become an adult; mature',ex:'Children grow up so fast.'},
+  {verb:'Hand in',mar:'जमा करणे',meaning:'Submit work to someone',ex:'Please hand in your assignment by Friday.'},
+  {verb:'Hang out',mar:'वेळ घालवणे',meaning:'Spend time relaxing with others',ex:'We love hanging out at the park.'},
+  {verb:'Hold on',mar:'थांबणे / धरणे',meaning:'Wait; grip tightly',ex:'Hold on — I will be right back.'},
+  {verb:'Keep up with',mar:'बरोबर राहणे',meaning:'Stay at the same pace',ex:"It's hard to keep up with new technology."},
+  {verb:'Let down',mar:'निराश करणे',meaning:'Disappoint someone',ex:"Don't let down your parents' expectations."},
+  {verb:'Look after',mar:'काळजी घेणे',meaning:'Take care of someone',ex:'She looks after her younger siblings.'},
+  {verb:'Look forward to',mar:'आतुरतेने वाट पाहणे',meaning:'Anticipate with pleasure',ex:'I look forward to meeting you soon.'},
+  {verb:'Look into',mar:'तपास करणे',meaning:'Investigate or examine',ex:'The police looked into the matter.'},
+  {verb:'Look out',mar:'सावध राहणे',meaning:'Be careful or watchful',ex:'Look out for cars when crossing the road.'},
+  {verb:'Look up',mar:'शोधणे',meaning:'Search for information',ex:'Look up the word in the dictionary.'},
+  {verb:'Make out',mar:'समजणे',meaning:'Understand; see clearly',ex:"I can't make out what he is saying."},
+  {verb:'Make up',mar:'बनवणे / रुसवा मिटवणे',meaning:'Invent; reconcile after quarrel',ex:'They made up after their fight.'},
+  {verb:'Move on',mar:'पुढे जाणे',meaning:'Stop dwelling on past',ex:"It's time to move on from that failure."},
+  {verb:'Pick up',mar:'उचलणे / शिकणे',meaning:'Collect; learn informally',ex:'She picked up Spanish very quickly.'},
+  {verb:'Point out',mar:'दाखवून देणे',meaning:'Draw attention to something',ex:'He pointed out the error in my work.'},
+  {verb:'Put off',mar:'पुढे ढकलणे',meaning:'Postpone; delay',ex:'Stop putting off your homework.'},
+  {verb:'Put up with',mar:'सहन करणे',meaning:'Tolerate or endure',ex:"I can't put up with this noise anymore."},
+  {verb:'Run into',mar:'अचानक भेटणे',meaning:'Meet someone unexpectedly',ex:'I ran into my old teacher at the market.'},
+  {verb:'Run out of',mar:'संपून जाणे',meaning:'Have no more of something',ex:'We ran out of milk this morning.'},
+  {verb:'Set up',mar:'स्थापित करणे',meaning:'Establish or arrange',ex:'She set up her own business last year.'},
+  {verb:'Show off',mar:'मिरवणे',meaning:'Display to impress others',ex:"He's always showing off his new phone."},
+  {verb:'Stand for',mar:'प्रतिनिधित्व करणे',meaning:'Represent; tolerate',ex:"I won't stand for such behaviour."},
+  {verb:'Take after',mar:'सारखे असणे',meaning:'Resemble a parent',ex:'She takes after her mother in looks.'},
+  {verb:'Take off',mar:'उडणे / सुरू होणे',meaning:'Leave the ground; become successful',ex:'The plane took off at 9 am.'},
+  {verb:'Take on',mar:'स्वीकारणे',meaning:'Accept a task or challenge',ex:'She took on the new project eagerly.'},
+  {verb:'Turn down',mar:'नाकारणे',meaning:'Reject an offer',ex:'He turned down the job offer.'},
+  {verb:'Turn off',mar:'बंद करणे',meaning:'Switch off a device',ex:'Please turn off the lights.'},
+  {verb:'Turn on',mar:'सुरू करणे',meaning:'Switch on a device',ex:'Turn on the fan — it is hot.'},
+  {verb:'Turn up',mar:'हजर होणे / वाढवणे',meaning:'Arrive; increase volume',ex:'He turned up late to the meeting.'},
+  {verb:'Work out',mar:'व्यायाम / सोडवणे',meaning:'Exercise; find a solution',ex:'We need to work out a plan.'},
+  {verb:'Write down',mar:'लिहून ठेवणे',meaning:'Record in writing',ex:'Write down the instructions carefully.'},
+  {verb:'Stand out',mar:'उठून दिसणे',meaning:'Be noticeable or distinctive',ex:'Her red dress made her stand out.'},
+  {verb:'Fill in',mar:'भरणे',meaning:'Complete a form; substitute',ex:'Please fill in this application form.'},
+  {verb:'Get away with',mar:'शिक्षा न होणे',meaning:'Do wrong without punishment',ex:"He always gets away with being late."},
+  {verb:'Go on',mar:'पुढे सुरू राहणे',meaning:'Continue; happen',ex:"What's going on here?"},
+  {verb:'Let in',mar:'आत येऊ देणे',meaning:'Allow someone to enter',ex:'Please let him in — he is my friend.'},
+  {verb:'Zoom in',mar:'जवळून पाहणे',meaning:'Focus on a detail; magnify',ex:'Zoom in to see the fine print.'},
+  {verb:'Zoom out',mar:'दूरून पाहणे',meaning:'See the bigger picture',ex:'Zoom out to understand the whole situation.'},
+  {verb:'Get along',mar:'जमणे / मैत्री',meaning:'Have a good relationship',ex:'We get along very well.'},
+];
+
+let filteredPhrasal=[...PHRASAL_VERBS];
+function renderPhrasal(list){
+  const g=document.getElementById('phrasalGrid');if(!g)return;
+  const c=document.getElementById('phrasalCount');if(c)c.textContent=list.length+' phrasal verbs';
+  g.innerHTML=list.map(p=>`<div class="phrasal-card"><div class="phrasal-verb">🔗 ${p.verb}</div><div class="phrasal-mar">🌺 ${p.mar}</div><div class="phrasal-meaning">📖 ${p.meaning}</div><div class="phrasal-ex">💬 ${p.ex}</div></div>`).join('');
+}
+function filterPhrasal(){
+  const q=document.getElementById('phrasalSearch').value.trim().toLowerCase();
+  filteredPhrasal=q?PHRASAL_VERBS.filter(p=>p.verb.toLowerCase().includes(q)||p.mar.includes(q)||p.meaning.toLowerCase().includes(q)):[...PHRASAL_VERBS];
+  renderPhrasal(filteredPhrasal);
+}
+
+/* ════════════════════════════════════════════════════════
+   SENTENCE PATTERNS DATA
+════════════════════════════════════════════════════════ */
+const PATTERNS=[
+  {num:1,title:'Conditional Sentences',mar:'शर्त वाक्ये',formula:'If + condition, result (Zero/1st/2nd/3rd)',explanation:'Conditionals express situations and their consequences. Zero: facts. 1st: possible future. 2nd: unreal present. 3rd: unreal past.',exmar:'जर-तर वाक्ये: शक्यता, वास्तव, काल्पनिक.',examples:['If it rains, I stay home.','If I study, I will pass.','If I were rich, I would travel.','If she had tried, she would have won.']},
+  {num:2,title:'Passive Voice',mar:'कर्मणी प्रयोग',formula:'Subject + is/was/will be + V3 (+ by + agent)',explanation:'Passive voice focuses on the action or object rather than the doer. Used in formal writing.',exmar:'करणाऱ्यापेक्षा केलेल्या क्रियेवर जोर.',examples:['The book was written by Ravi.','The letter is being written.','Rice is eaten in Maharashtra.','The match will be played tomorrow.']},
+  {num:3,title:'Reported Speech',mar:'अप्रत्यक्ष उक्ती',formula:'He said that + Subject + Verb (tense shifted back)',explanation:"Report what someone said without quoting directly. Tense shifts back: is→was, will→would, can→could.",exmar:'कोणाचे बोलणे थेट न देता सांगणे. काळ मागे सरकतो.',examples:['She said, "I am happy." → She said she was happy.','He said, "I will come." → He said he would come.','She asked, "Can you help?" → She asked if I could help.']},
+  {num:4,title:'Relative Clauses',mar:'संबंध वाक्यांश',formula:'Noun + who/which/that/whose + clause',explanation:'Add extra information about a noun. "Who" for people, "which/that" for things, "whose" for possession.',exmar:'नामाबद्दल अतिरिक्त माहिती देणे.',examples:['The boy who came is my friend.','The book that I bought is good.','The woman whose bag was stolen called police.','The city which I visited was beautiful.']},
+  {num:5,title:'Wish Sentences',mar:'इच्छा वाक्ये',formula:'I wish + past tense (unreal present) OR had + V3 (unreal past)',explanation:'"Wish" expresses desire for something different. For present: wish + simple past. For past: wish + past perfect.',exmar:'अशक्य किंवा न झालेल्या गोष्टींबद्दल इच्छा.',examples:['I wish I could fly like a bird.','She wishes she were taller.','I wish I had studied harder.','He wishes he had apologized sooner.']},
+  {num:6,title:'Question Tags',mar:'प्रश्नार्थक शेपटी',formula:'Positive statement + negative tag? / Negative + positive tag?',explanation:'Short questions at the end of statements to confirm or seek agreement. Positive statement → negative tag.',exmar:'सकारात्मक वाक्यानंतर नकारात्मक टॅग.',examples:["She is a teacher, isn't she?","He didn't come, did he?","You can swim, can't you?","They won't leave, will they?"]},
+  {num:7,title:'Inversion (Formal)',mar:'क्रमविपर्यास (औपचारिक)',formula:'Negative adverb + Auxiliary + Subject + Verb',explanation:'Inversion is used for emphasis or in formal writing. Common with: Never, No sooner, Not only, Hardly, Seldom.',exmar:'जोर देण्यासाठी सहायक क्रियापद आधी येते.',examples:['Never have I seen such beauty.','No sooner had he arrived than it rained.','Not only did she win, but she also broke a record.','Hardly had I slept when the alarm rang.']},
+  {num:8,title:'Gerund vs Infinitive',mar:'क्रियानाम vs अनंत',formula:'Verb + V-ing (gerund) OR Verb + to + V1 (infinitive)',explanation:'Some verbs take gerund (-ing), some take infinitive (to+V1), and some take both. Key verbs: enjoy/avoid/suggest → gerund; want/decide/hope → infinitive.',exmar:'काही क्रियापदांनंतर ing येते, काहींनंतर to.',examples:['I enjoy reading books. (gerund)','She decided to leave early. (infinitive)','He avoids making mistakes. (gerund)','They hope to win the match. (infinitive)']},
+];
+
+function renderPatterns(){
+  const g=document.getElementById('patternGrid');if(!g)return;
+  g.innerHTML=PATTERNS.map(p=>`<div class="pattern-card"><div class="pattern-head"><div class="pattern-num">${p.num<10?'0'+p.num:p.num}</div><div><div class="pattern-title">${p.title}</div><div class="pattern-title-mar">${p.mar}</div></div></div><div class="pattern-formula">${p.formula}</div><div class="pattern-body"><div class="pattern-explanation">${p.explanation} <span style="color:var(--orange);font-size:12px;">| ${p.exmar}</span></div><div class="pattern-examples">${p.examples.map(e=>`<div class="pattern-ex-chip">${e}</div>`).join('')}</div></div></div>`).join('');
+}
+
+/* ════════════════════════════════════════════════════════
+   GRAMMAR QUIZ (20 questions)
+════════════════════════════════════════════════════════ */
+const QUIZ=[
+  {q:'She ___ to school every day.',hint:'Simple Present — He/She/It',opts:['go','goes','going','gone'],ans:1,exp:'Use "goes" for He/She/It in Simple Present. → ती रोज शाळेत जाते.'},
+  {q:'They ___ cricket right now.',hint:'Present Continuous',opts:['play','played','are playing','have played'],ans:2,exp:'"are playing" = Present Continuous (are + V-ing). → ते आत्ता खेळत आहेत.'},
+  {q:'I ___ my homework before dinner.',hint:'Past Perfect',opts:['finish','finished','had finished','have finished'],ans:2,exp:'"had finished" = Past Perfect. → मी जेवणापूर्वी गृहपाठ संपवला होता.'},
+  {q:'She ___ in this city since 2010.',hint:'Present Perfect Continuous',opts:['lives','lived','has been living','was living'],ans:2,exp:'"has been living" = Present Perfect Continuous. → ती २०१० पासून इथे राहत आहे.'},
+  {q:'If I were rich, I ___ around the world.',hint:'Second Conditional',opts:['travel','travelled','would travel','will travel'],ans:2,exp:'Second Conditional uses "would + V1". → जर मी श्रीमंत असतो, तर फिरलो असतो.'},
+  {q:'The letter ___ by Ravi yesterday.',hint:'Passive Voice — Simple Past',opts:['writes','wrote','was written','is written'],ans:2,exp:'Passive Past = was/were + V3. → पत्र रवीने काल लिहिले.'},
+  {q:'She asked me if I ___ help her.',hint:'Reported Speech — backshift of "can"',opts:['can','could','will','would'],ans:1,exp:'In reported speech, "can" shifts to "could". → तिने मला विचारले की मी मदत करू शकतो का.'},
+  {q:"He hasn't eaten anything, ___ he?",hint:'Question Tag',opts:['has',"hasn't",'is','does'],ans:0,exp:'Negative statement → positive tag. Use "has". → त्याने काही खाल्लेले नाही, बरोबर ना?'},
+  {q:'She has been studying ___ three hours.',hint:'Present Perfect Continuous — duration',opts:['since','for','from','at'],ans:1,exp:'"for" with a duration period. "Since" is for a point in time. → ती तीन तासांपासून अभ्यास करत आहे.'},
+  {q:'By the time we arrived, the movie ___ started.',hint:'Past Perfect',opts:['had already','has already','was','did'],ans:0,exp:'"had already started" = Past Perfect. → आम्ही पोहोचेपर्यंत चित्रपट सुरू झाला होता.'},
+  {q:'This is the book ___ I told you about.',hint:'Relative Clause',opts:['who','which','where','whose'],ans:1,exp:'"which" is used for things. → हे तेच पुस्तक आहे जे मी सांगितले होते.'},
+  {q:'Neither she ___ I was invited.',hint:'Neither…nor',opts:['or','nor','and','but'],ans:1,exp:'"Neither…nor" is a correlative conjunction. → ना ती ना मी — दोघांनाही बोलावले नव्हते.'},
+  {q:'You should ___ more water daily.',hint:'Modal + Base Verb',opts:['drinking','drank','drink','drinks'],ans:2,exp:'After modals (should, can, will…) always use V1. → तुम्ही रोज जास्त पाणी प्यायला पाहिजे.'},
+  {q:'The news ___ shocking to everyone.',hint:'Subject-Verb Agreement',opts:['were','are','was','have been'],ans:2,exp:'"news" is singular → use "was". → बातमी सर्वांसाठी धक्कादायक होती.'},
+  {q:'I wish I ___ fly like a bird!',hint:'Wish + Unreal Present',opts:['can','could','will','would'],ans:1,exp:'"I wish + could" = unreal present desire. → मला उडता आले असते तर!'},
+  {q:'She ___ to Paris three times.',hint:'Present Perfect — life experience',opts:['went','goes','has been','had gone'],ans:2,exp:'"has been" = Present Perfect for experience. → ती तीन वेळा पॅरिसला गेली आहे.'},
+  {q:'No sooner ___ he arrived than it rained.',hint:'Inversion with "No sooner…than"',opts:['had','did','was','has'],ans:0,exp:'"No sooner had + Subject + V3…than". → तो पोहोचताच पाऊस पडला.'},
+  {q:'The children ___ playing when I reached home.',hint:'Past Continuous',opts:['were','was','are','have been'],ans:0,exp:'"Children" plural → "were". → मी घरी पोहोचलो तेव्हा मुले खेळत होती.'},
+  {q:"Despite ___ hard, he failed the exam.",hint:'Despite + gerund (V-ing)',opts:['study','studied','studying','studies'],ans:2,exp:'"Despite" is followed by a gerund (V-ing). → खूप अभ्यास करूनही नापास झाला.'},
+  {q:'I enjoy ___ music every evening.',hint:'enjoy + gerund',opts:['listen','listened','to listen','listening'],ans:3,exp:'"enjoy" is always followed by a gerund (-ing). → मला रोज संध्याकाळी संगीत ऐकणे आवडते.'},
+];
+
+let qIdx=0,qScore=0,qAnswered=false;
+function renderQuiz(){
+  const c=document.getElementById('quizContainer');
+  if(qIdx>=QUIZ.length){
+    const pct=Math.round((qScore/QUIZ.length)*100);
+    const grade=pct>=90?'🏆 Excellent!':pct>=70?'🌟 Good job!':pct>=50?'📚 Keep practising!':'💪 Don\'t give up!';
+    c.innerHTML=`<div class="quiz-complete"><div class="quiz-complete-title">Quiz Complete! 🎉</div><div class="quiz-complete-score">${qScore}/${QUIZ.length}</div><div style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--accent);margin-bottom:8px;">${pct}% — ${grade}</div><div class="quiz-complete-sub">You answered ${qScore} questions correctly out of ${QUIZ.length}.</div><button class="use-btn" style="margin-top:16px" onclick="restartQuiz()">🔄 Restart Quiz</button></div>`;
+    return;
+  }
+  const q=QUIZ[qIdx],prog=Math.round((qIdx/QUIZ.length)*100);
+  c.innerHTML=`<div class="quiz-progress"><div class="quiz-score-box"><div class="quiz-score-val">${qScore}</div><div class="quiz-score-lbl">Score</div></div><div class="quiz-score-box"><div class="quiz-score-val">${qIdx+1}/${QUIZ.length}</div><div class="quiz-score-lbl">Question</div></div><div class="quiz-bar-wrap"><div class="quiz-bar-label">Progress — ${prog}%</div><div class="quiz-bar-track"><div class="quiz-bar-fill" style="width:${prog}%"></div></div></div><button class="quiz-restart-btn" onclick="restartQuiz()">↺ Restart</button></div><div class="quiz-card"><div class="quiz-q-num">Question ${qIdx+1} of ${QUIZ.length}</div><div class="quiz-question">${q.q}</div><div class="quiz-hint">💡 Hint: ${q.hint}</div><div class="quiz-options">${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerQuiz(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div><div class="quiz-feedback" id="quizFb"></div><button class="quiz-next-btn" id="quizNextBtn" onclick="nextQ()">Next Question →</button></div>`;
+}
+function answerQuiz(idx){
+  if(qAnswered)return;
+  qAnswered=true;
+  const q=QUIZ[qIdx];
+  const opts=document.querySelectorAll('.quiz-opt');
+  opts.forEach(o=>o.disabled=true);
+  opts[idx].classList.add(idx===q.ans?'correct':'wrong');
+  if(idx!==q.ans)opts[q.ans].classList.add('correct');
+  if(idx===q.ans)qScore++;
+  const fb=document.getElementById('quizFb');
+  fb.className=`quiz-feedback show ${idx===q.ans?'correct':'wrong'}`;
+  fb.innerHTML=`${idx===q.ans?'✅ Correct!':'❌ Wrong!'} — ${q.exp}`;
+  document.getElementById('quizNextBtn').classList.add('show');
+}
+function nextQ(){qIdx++;qAnswered=false;renderQuiz();}
+function restartQuiz(){qIdx=0;qScore=0;qAnswered=false;renderQuiz();}
+
+/* ════════════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded',()=>{
+  initVerbDict();
+  renderTenses();
+  renderIdioms(IDIOMS);
+  renderPhrasal(PHRASAL_VERBS);
+  renderPatterns();
+  renderModalGrid();
+  renderQuiz();
+  buildSentence();
+  ['v1','v2','v3','vmar'].forEach(id=>{
+    document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')generateSentences();});
+  });
+  document.getElementById('v1').value='write';
+  document.getElementById('v2').value='wrote';
+  document.getElementById('v3').value='written';
+  document.getElementById('vmar').value='लिहिणे';
+});
+</script>
+</body>
+</html>

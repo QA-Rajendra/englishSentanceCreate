@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Sentence Practice Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   DESIGN SYSTEM — Warm Cream + Deep Slate + Saffron
+═══════════════════════════════════════════════ */
+:root {
+  --bg:        #f5f0e8;
+  --bg2:       #ede7d9;
+  --cream:     #faf7f2;
+  --slate:     #1c1f2e;
+  --slate2:    #252838;
+  --slate3:    #2e3347;
+  --saffron:   #e8860a;
+  --saffron2:  #f5a623;
+  --teal:      #0a7a6e;
+  --teal2:     #0e9a8c;
+  --rose:      #c0392b;
+  --rose2:     #e74c3c;
+  --violet:    #6c3fb5;
+  --text:      #1c1f2e;
+  --text2:     #4a4f68;
+  --text3:     #7a8099;
+  --border:    rgba(28,31,46,0.12);
+  --border2:   rgba(28,31,46,0.08);
+  --shadow:    0 4px 24px rgba(28,31,46,0.10);
+  --shadow2:   0 2px 8px rgba(28,31,46,0.07);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Texture overlay */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='60' height='60' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0;
+}
+
+/* ═══════════════ HEADER ═══════════════ */
+header {
+  position: relative; z-index: 10;
+  background: var(--slate);
+  padding: 0 48px;
+  display: flex; align-items: stretch;
+  min-height: 72px;
+}
+.header-brand {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 0;
+  flex: 1;
+}
+.brand-mark {
+  width: 42px; height: 42px;
+  background: var(--saffron);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Lora', serif;
+  font-size: 20px; font-weight: 700; font-style: italic;
+  color: var(--slate);
+  flex-shrink: 0;
+}
+.brand-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px; font-weight: 800;
+  color: #fff; letter-spacing: -0.3px;
+}
+.brand-tagline {
+  font-size: 10px; color: rgba(255,255,255,0.35);
+  letter-spacing: 3px; text-transform: uppercase;
+  margin-top: 2px;
+}
+.header-actions {
+  display: flex; align-items: center; gap: 12px;
+}
+.search-wrapper {
+  position: relative; display: flex; align-items: center;
+}
+.search-wrapper input {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  padding: 8px 14px 8px 36px;
+  font-family: 'Syne', sans-serif; font-size: 12px;
+  color: #fff; width: 220px; outline: none;
+  transition: all 0.2s;
+}
+.search-wrapper input::placeholder { color: rgba(255,255,255,0.3); }
+.search-wrapper input:focus {
+  background: rgba(255,255,255,0.12);
+  border-color: var(--saffron);
+  width: 280px;
+}
+.search-icon {
+  position: absolute; left: 10px;
+  color: rgba(255,255,255,0.3); font-size: 14px;
+  pointer-events: none;
+}
+.search-results-dropdown {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  max-height: 280px; overflow-y: auto;
+  z-index: 999; display: none;
+}
+.search-results-dropdown.show { display: block; }
+.sr-item {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border2);
+  cursor: pointer; transition: background 0.12s;
+}
+.sr-item:last-child { border-bottom: none; }
+.sr-item:hover { background: var(--bg2); }
+.sr-eng { font-size: 13px; color: var(--text); }
+.sr-mar { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 12px; color: var(--text3); margin-top: 2px; }
+.sr-none { padding: 16px; text-align: center; font-size: 12px; color: var(--text3); }
+
+/* ═══════════════ NAV TABS ═══════════════ */
+nav {
+  position: sticky; top: 0; z-index: 9;
+  background: var(--slate2);
+  display: flex; gap: 0;
+  overflow-x: auto; scrollbar-width: none;
+  border-bottom: 2px solid var(--slate3);
+}
+nav::-webkit-scrollbar { display: none; }
+.nav-tab {
+  background: none; border: none;
+  padding: 14px 24px;
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600;
+  color: rgba(255,255,255,0.4);
+  cursor: pointer; transition: all 0.2s;
+  white-space: nowrap; letter-spacing: 0.5px;
+  text-transform: uppercase;
+  position: relative;
+}
+.nav-tab::after {
+  content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 2px;
+  background: var(--saffron); transform: scaleX(0);
+  transition: transform 0.2s;
+}
+.nav-tab:hover { color: rgba(255,255,255,0.7); }
+.nav-tab.active { color: var(--saffron2); }
+.nav-tab.active::after { transform: scaleX(1); }
+
+/* ═══════════════ MAIN LAYOUT ═══════════════ */
+main {
+  position: relative; z-index: 1;
+  max-width: 1200px; margin: 0 auto;
+  padding: 40px 48px 80px;
+}
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: slideUp 0.3s ease both; }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════ SECTION TITLES ═══════════════ */
+.section-head {
+  display: flex; align-items: flex-end; gap: 16px;
+  margin-bottom: 24px; flex-wrap: wrap;
+}
+.section-title {
+  font-family: 'Lora', serif;
+  font-size: 28px; font-weight: 600; font-style: italic;
+  color: var(--slate);
+  line-height: 1;
+}
+.section-title em { color: var(--saffron); font-style: normal; }
+.section-kicker {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text3); padding-bottom: 4px;
+}
+.section-desc {
+  font-family: 'Lora', serif; font-style: italic;
+  font-size: 14px; color: var(--text2); line-height: 1.6;
+  margin-bottom: 22px;
+}
+
+/* ═══════════════ TABLES ═══════════════ */
+.table-card {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow2);
+  margin-bottom: 32px;
+}
+.table-card-header {
+  background: var(--slate);
+  padding: 14px 22px;
+  display: flex; align-items: center; gap: 12px;
+}
+.table-card-icon {
+  width: 32px; height: 32px;
+  background: var(--saffron);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.table-card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 700;
+  color: #fff; letter-spacing: 0.5px;
+}
+.table-card-sub {
+  font-size: 10px; color: rgba(255,255,255,0.35);
+  letter-spacing: 2px; text-transform: uppercase;
+  margin-left: auto;
+}
+.data-table {
+  width: 100%; border-collapse: collapse;
+}
+.data-table thead th {
+  background: var(--bg2);
+  padding: 11px 20px;
+  text-align: left;
+  font-family: 'Syne', sans-serif;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: var(--text3);
+  border-bottom: 1px solid var(--border);
+}
+.data-table tbody tr {
+  border-bottom: 1px solid var(--border2);
+  transition: background 0.12s;
+}
+.data-table tbody tr:last-child { border-bottom: none; }
+.data-table tbody tr:hover { background: rgba(232,134,10,0.04); }
+.data-table td {
+  padding: 12px 20px;
+  vertical-align: middle;
+  font-size: 14px;
+}
+.td-eng {
+  font-family: 'Lora', serif; font-size: 15px; font-weight: 600;
+  color: var(--slate);
+}
+.td-modal {
+  font-family: 'Lora', serif; font-size: 15px; font-weight: 600;
+  color: var(--teal);
+}
+.td-obj { color: var(--text2); font-size: 13px; }
+.td-mar {
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: 14px; font-weight: 500;
+  color: var(--saffron);
+}
+.td-badge {
+  display: inline-block;
+  padding: 3px 10px; border-radius: 20px;
+  font-family: 'Syne', sans-serif;
+  font-size: 11px; font-weight: 600;
+}
+.badge-sub  { background: rgba(193,57,43,0.1); color: var(--rose); }
+.badge-help { background: rgba(10,122,110,0.1); color: var(--teal); }
+.badge-mod  { background: rgba(108,63,181,0.1); color: var(--violet); }
+.td-row-num {
+  font-size: 11px; color: var(--text3); font-weight: 600;
+  text-align: center; width: 40px;
+}
+
+/* Alternating rows */
+.data-table tbody tr:nth-child(even) { background: rgba(28,31,46,0.02); }
+.data-table tbody tr:nth-child(even):hover { background: rgba(232,134,10,0.04); }
+
+/* ═══════════════ SENTENCE GENERATOR ═══════════════ */
+.generator-card {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+.generator-card-header {
+  background: linear-gradient(135deg, var(--saffron) 0%, #f5a623 100%);
+  padding: 18px 26px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.gen-header-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px; font-weight: 800;
+  color: var(--slate);
+}
+.gen-header-sub {
+  font-size: 11px; color: rgba(28,31,46,0.55);
+  letter-spacing: 2px; text-transform: uppercase;
+}
+.generator-body { padding: 26px; }
+.gen-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 16px; margin-bottom: 20px;
+}
+.field { display: flex; flex-direction: column; gap: 7px; }
+.field-label {
+  font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--text3); font-weight: 600;
+}
+.field-label .lbl-badge {
+  display: inline-block;
+  background: var(--slate);
+  color: var(--saffron2);
+  border-radius: 4px; padding: 1px 6px;
+  font-size: 9px; margin-right: 5px;
+}
+input[type=text], select {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 11px 14px;
+  font-family: 'Syne', sans-serif; font-size: 13px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+input[type=text]:focus, select:focus {
+  border-color: var(--saffron);
+  box-shadow: 0 0 0 3px rgba(232,134,10,0.1);
+}
+input[type=text]::placeholder { color: var(--text3); }
+select { cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237a8099' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+  padding-right: 32px;
+}
+select option { background: var(--cream); }
+
+.gen-btn-row {
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: none; border-radius: 9px;
+  padding: 12px 26px;
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary {
+  background: var(--saffron);
+  color: var(--slate);
+  box-shadow: 0 4px 14px rgba(232,134,10,0.3);
+}
+.btn-primary:hover {
+  background: var(--saffron2);
+  box-shadow: 0 6px 20px rgba(232,134,10,0.4);
+  transform: translateY(-1px);
+}
+.btn-secondary {
+  background: var(--bg2);
+  color: var(--text2);
+  border: 1.5px solid var(--border);
+}
+.btn-secondary:hover { background: var(--slate); color: #fff; border-color: var(--slate); }
+.btn-teal {
+  background: rgba(10,122,110,0.1);
+  color: var(--teal);
+  border: 1.5px solid rgba(10,122,110,0.2);
+}
+.btn-teal:hover { background: var(--teal); color: #fff; }
+.btn-sm { padding: 8px 16px; font-size: 11px; border-radius: 7px; }
+
+/* ═══════════════ OUTPUT ═══════════════ */
+.output-box {
+  background: var(--slate);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-top: 20px;
+  position: relative; overflow: hidden;
+  display: none;
+}
+.output-box.show { display: block; animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+@keyframes popIn { from { opacity:0; transform: scale(0.97); } to { opacity:1; transform: scale(1); } }
+.output-box::before {
+  content: '';
+  position: absolute; top: 0; left: 0; width: 4px; bottom: 0;
+  background: linear-gradient(180deg, var(--saffron), var(--teal2));
+}
+.output-label {
+  font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(255,255,255,0.3); margin-bottom: 10px; padding-left: 4px;
+}
+.output-sentence {
+  font-family: 'Lora', serif;
+  font-size: 26px; font-weight: 600; font-style: italic;
+  color: var(--saffron2); line-height: 1.4; margin-bottom: 10px;
+}
+.output-marathi {
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: 20px; font-weight: 500;
+  color: var(--teal2); line-height: 1.5;
+}
+.output-parts {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.part-chip {
+  padding: 4px 12px; border-radius: 20px;
+  font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 600;
+  border: 1px solid;
+}
+.pc-sub   { color: #ff8a80; border-color: rgba(255,138,128,0.3); background: rgba(255,138,128,0.08); }
+.pc-modal { color: #80d8ff; border-color: rgba(128,216,255,0.3); background: rgba(128,216,255,0.08); }
+.pc-verb  { color: #b9f6ca; border-color: rgba(185,246,202,0.3); background: rgba(185,246,202,0.08); }
+.pc-obj   { color: #e1bee7; border-color: rgba(225,190,231,0.3); background: rgba(225,190,231,0.08); }
+.output-actions {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-top: 14px;
+}
+.oa-btn {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 7px; padding: 7px 14px;
+  font-family: 'Syne', sans-serif; font-size: 10px;
+  font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+  color: rgba(255,255,255,0.6); cursor: pointer;
+  transition: all 0.15s;
+}
+.oa-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+/* ═══════════════ SENTENCE TABLE (250 sentences) ═══════════════ */
+.filter-row {
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  margin-bottom: 16px;
+}
+.filter-chip {
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  border-radius: 20px; padding: 6px 16px;
+  font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 600;
+  color: var(--text3); cursor: pointer; transition: all 0.15s;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.filter-chip:hover { border-color: var(--saffron); color: var(--saffron); }
+.filter-chip.active { background: var(--saffron); color: var(--slate); border-color: var(--saffron); }
+.sent-count {
+  margin-left: auto;
+  font-size: 11px; color: var(--text3); letter-spacing: 1px;
+}
+
+/* ═══════════════ MOBILE ═══════════════ */
+@media (max-width: 820px) {
+  header { padding: 0 16px; flex-wrap: wrap; }
+  main, nav { padding-left: 16px; padding-right: 16px; }
+  .gen-inputs { grid-template-columns: 1fr 1fr; }
+  .search-wrapper input { width: 160px; }
+  .search-wrapper input:focus { width: 200px; }
+  .output-sentence { font-size: 20px; }
+  .output-marathi { font-size: 16px; }
+}
+@media (max-width: 520px) {
+  .gen-inputs { grid-template-columns: 1fr; }
+  .data-table td { padding: 10px 12px; }
+  .section-title { font-size: 22px; }
+}
+
+/* ═══════════════ SCROLLBAR ═══════════════ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+/* ═══════════════ STATS BAR ═══════════════ */
+.stats-bar {
+  display: flex; gap: 20px; flex-wrap: wrap;
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 22px;
+  margin-bottom: 24px;
+}
+.stat { text-align: center; }
+.stat-val {
+  font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800;
+  color: var(--saffron);
+}
+.stat-lbl {
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text3); margin-top: 2px;
+}
+
+/* TTS button */
+.tts-inline {
+  background: none; border: 1px solid var(--border);
+  border-radius: 6px; padding: 3px 8px;
+  font-size: 11px; cursor: pointer; color: var(--text3);
+  transition: all 0.15s;
+}
+.tts-inline:hover { border-color: var(--teal); color: var(--teal); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ HEADER ═══════════════════════ -->
+<header>
+  <div class="header-brand">
+    <div class="brand-mark">E</div>
+    <div>
+      <div class="brand-name">English Sentence Practice Generator</div>
+      <div class="brand-tagline">Learn English with Marathi · इंग्रजी शिका</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <div class="search-wrapper" id="globalSearchWrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="globalSearch" placeholder="Search sentences…" autocomplete="off" />
+      <div class="search-results-dropdown" id="searchDropdown"></div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════ NAV ═══════════════════════ -->
+<nav id="mainNav">
+  <button class="nav-tab active" data-tab="tab-pronouns">👤 Pronouns</button>
+  <button class="nav-tab" data-tab="tab-helping">🔧 Helping Verbs</button>
+  <button class="nav-tab" data-tab="tab-modals">⚡ Modal Verbs</button>
+  <button class="nav-tab" data-tab="tab-generator">✍️ Sentence Generator</button>
+  <button class="nav-tab" data-tab="tab-sentences">📋 250 Sentences</button>
+</nav>
+
+<main>
+
+<!-- ═══════════════ TAB 1: PRONOUNS ═══════════════ -->
+<div id="tab-pronouns" class="tab-panel active">
+  <div class="section-head">
+    <div>
+      <div class="section-kicker">Grammar Reference</div>
+      <div class="section-title">Pronoun <em>Chart</em></div>
+    </div>
+  </div>
+  <p class="section-desc">Pronouns replace nouns in sentences. Learn Subject, Object and Possessive forms along with their Marathi meanings.</p>
+
+  <div class="table-card">
+    <div class="table-card-header">
+      <div class="table-card-icon">👤</div>
+      <div>
+        <div class="table-card-title">Personal Pronouns — व्यक्तिवाचक सर्वनाम</div>
+      </div>
+      <div class="table-card-sub">8 pronouns</div>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width:40px">#</th>
+          <th>Subject (कर्ता)</th>
+          <th>Object (कर्म)</th>
+          <th>Possessive (स्वामित्व)</th>
+          <th>Marathi Meaning — मराठी अर्थ</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody id="pronounTableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Demonstrative Pronouns -->
+  <div class="table-card">
+    <div class="table-card-header">
+      <div class="table-card-icon">👆</div>
+      <div><div class="table-card-title">Demonstrative Pronouns — दर्शक सर्वनाम</div></div>
+      <div class="table-card-sub">This · That · These · Those</div>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th><th>Pronoun</th><th>Type</th><th>Marathi</th><th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="td-row-num">1</td><td class="td-eng">This</td><td><span class="td-badge badge-sub">Near · Singular</span></td><td class="td-mar">हे / हा / ही</td><td class="td-obj">This is my book. — हे माझे पुस्तक आहे.</td></tr>
+        <tr><td class="td-row-num">2</td><td class="td-eng">That</td><td><span class="td-badge badge-sub">Far · Singular</span></td><td class="td-mar">ते / तो / ती</td><td class="td-obj">That is his pen. — तो त्याचा पेन आहे.</td></tr>
+        <tr><td class="td-row-num">3</td><td class="td-eng">These</td><td><span class="td-badge badge-help">Near · Plural</span></td><td class="td-mar">हे / ह्या / ही</td><td class="td-obj">These are my books. — ही माझी पुस्तके आहेत.</td></tr>
+        <tr><td class="td-row-num">4</td><td class="td-eng">Those</td><td><span class="td-badge badge-help">Far · Plural</span></td><td class="td-mar">ते / त्या / ती</td><td class="td-obj">Those are her flowers. — त्या तिच्या फुलांच्या आहेत.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 2: HELPING VERBS ═══════════════ -->
+<div id="tab-helping" class="tab-panel">
+  <div class="section-head">
+    <div>
+      <div class="section-kicker">Grammar Reference</div>
+      <div class="section-title">Helping <em>Verbs</em></div>
+    </div>
+  </div>
+  <p class="section-desc">Helping verbs (सहायक क्रियापद) support the main verb. They show tense, mood, or aspect of the sentence.</p>
+  <div class="table-card">
+    <div class="table-card-header">
+      <div class="table-card-icon">🔧</div>
+      <div><div class="table-card-title">Helping Verbs — सहायक क्रियापद</div></div>
+      <div class="table-card-sub">8 verbs</div>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr><th>#</th><th>Helping Verb</th><th>Marathi (मराठी)</th><th>Used With</th><th>Example Sentence</th></tr>
+      </thead>
+      <tbody id="helpingTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 3: MODAL VERBS ═══════════════ -->
+<div id="tab-modals" class="tab-panel">
+  <div class="section-head">
+    <div>
+      <div class="section-kicker">Grammar Reference</div>
+      <div class="section-title">Modal <em>Verbs</em></div>
+    </div>
+  </div>
+  <p class="section-desc">Modal verbs express ability, possibility, permission or obligation. They always come before a base verb (V1).</p>
+  <div class="table-card">
+    <div class="table-card-header">
+      <div class="table-card-icon">⚡</div>
+      <div><div class="table-card-title">Modal Verbs — विधी सहायक क्रियापद</div></div>
+      <div class="table-card-sub">10 modals</div>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr><th>#</th><th>Modal Verb</th><th>Marathi (मराठी)</th><th>Meaning / Use</th><th>Example</th><th>मराठी उदाहरण</th></tr>
+      </thead>
+      <tbody id="modalTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 4: SENTENCE GENERATOR ═══════════════ -->
+<div id="tab-generator" class="tab-panel">
+  <div class="section-head">
+    <div>
+      <div class="section-kicker">Interactive Tool</div>
+      <div class="section-title">Sentence <em>Generator</em></div>
+    </div>
+  </div>
+  <p class="section-desc">Build your own English sentences! Choose a Subject, Modal Verb, enter a Verb (V1) and Object — then click Generate.</p>
+
+  <div class="generator-card">
+    <div class="generator-card-header">
+      <div>
+        <div class="gen-header-title">⚡ Build Your Sentence</div>
+        <div class="gen-header-sub">Subject + Modal + Verb + Object</div>
+      </div>
+      <button class="btn btn-secondary btn-sm" id="randomFillBtn">🎲 Random Fill</button>
+    </div>
+    <div class="generator-body">
+      <div class="gen-inputs">
+        <div class="field">
+          <div class="field-label"><span class="lbl-badge">1</span>Subject (कर्ता)</div>
+          <select id="gen-subject">
+            <option value="I|मी">I — मी</option>
+            <option value="You|तू">You — तू</option>
+            <option value="You|तुम्ही">You — तुम्ही</option>
+            <option value="We|आम्ही">We — आम्ही</option>
+            <option value="They|ते">They — ते</option>
+            <option value="He|तो">He — तो</option>
+            <option value="She|ती">She — ती</option>
+            <option value="It|ते">It — ते</option>
+            <option value="This|हे">This — हे</option>
+            <option value="That|ते">That — ते</option>
+          </select>
+        </div>
+        <div class="field">
+          <div class="field-label"><span class="lbl-badge">2</span>Modal Verb (विधी)</div>
+          <select id="gen-modal">
+            <option value="can|शकतो">can — शकतो</option>
+            <option value="could|शकत होतो">could — शकत होतो</option>
+            <option value="may|कदाचित">may — कदाचित</option>
+            <option value="might|कदाचित">might — कदाचित</option>
+            <option value="must|पाहिजेच">must — पाहिजेच</option>
+            <option value="should|पाहिजे">should — पाहिजे</option>
+            <option value="will|करेल">will — करेल</option>
+            <option value="would|करत असे">would — करत असे</option>
+            <option value="ought to|केले पाहिजे">ought to — केले पाहिजे</option>
+            <option value="need to|गरज आहे">need to — गरज आहे</option>
+            <option value="dare to|धाडस करणे">dare to — धाडस करणे</option>
+            <option value="used to|पूर्वी करायचो">used to — पूर्वी करायचो</option>
+          </select>
+        </div>
+        <div class="field">
+          <div class="field-label"><span class="lbl-badge">3</span>Verb V1 (क्रियापद)</div>
+          <input type="text" id="gen-verb" placeholder="swim, sing, read…" />
+        </div>
+        <div class="field">
+          <div class="field-label"><span class="lbl-badge">4</span>Object (कर्म) <span style="color:var(--text3)">(optional)</span></div>
+          <input type="text" id="gen-object" placeholder="a song, the book…" />
+        </div>
+      </div>
+      <div class="gen-btn-row">
+        <button class="btn btn-primary" id="generateBtn">⚡ Generate Sentence</button>
+        <button class="btn btn-teal" id="ttsGenerateBtn">🔊 Listen</button>
+        <button class="btn btn-secondary" id="negativeBtn">➖ Make Negative</button>
+        <button class="btn btn-secondary" id="questionBtn">❓ Make Question</button>
+        <button class="btn btn-secondary btn-sm" id="clearBtn">✕ Clear</button>
+      </div>
+
+      <div class="output-box" id="outputBox">
+        <div class="output-label">Generated Sentence</div>
+        <div class="output-sentence" id="outputEng"></div>
+        <div class="output-marathi" id="outputMar"></div>
+        <div class="output-parts" id="outputParts"></div>
+        <div class="output-actions">
+          <button class="oa-btn" id="copyBtn">📋 Copy</button>
+          <button class="oa-btn" id="saveBtn">💾 Save to List</button>
+        </div>
+      </div>
+
+      <!-- Saved sentences -->
+      <div id="savedWrap" style="display:none;margin-top:20px">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:10px;font-weight:600">Saved Sentences</div>
+        <div id="savedList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 5: 250 SENTENCES ═══════════════ -->
+<div id="tab-sentences" class="tab-panel">
+  <div class="section-head">
+    <div>
+      <div class="section-kicker">Reference Collection</div>
+      <div class="section-title">250 Example <em>Sentences</em></div>
+    </div>
+  </div>
+
+  <div class="stats-bar" id="statsBar"></div>
+
+  <div class="filter-row" id="filterRow">
+    <button class="filter-chip active" data-filter="all">All</button>
+    <button class="filter-chip" data-filter="can">can</button>
+    <button class="filter-chip" data-filter="could">could</button>
+    <button class="filter-chip" data-filter="should">should</button>
+    <button class="filter-chip" data-filter="must">must</button>
+    <button class="filter-chip" data-filter="will">will</button>
+    <button class="filter-chip" data-filter="may">may</button>
+    <button class="filter-chip" data-filter="might">might</button>
+    <button class="filter-chip" data-filter="would">would</button>
+    <button class="filter-chip" data-filter="used to">used to</button>
+    <span class="sent-count" id="sentCount">250 sentences</span>
+  </div>
+
+  <div class="table-card">
+    <div class="table-card-header">
+      <div class="table-card-icon">📋</div>
+      <div><div class="table-card-title">Complete Sentence Collection</div></div>
+      <div class="table-card-sub" id="sentTableCount">250 sentences</div>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr><th style="width:40px">#</th><th>Subject</th><th>Modal</th><th>English Sentence</th><th>मराठी अर्थ</th><th>🔊</th></tr>
+      </thead>
+      <tbody id="sentTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+</main>
+
+<script>
+'use strict';
+
+/* ═══════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════ */
+const PRONOUNS = [
+  {sub:'I',    obj:'me',   poss:'my',    mar:'मी / मला / माझा',         ex:'I love my country.'},
+  {sub:'You',  obj:'you',  poss:'your',  mar:'तू / तुला / तुझा',         ex:'You forgot your bag.'},
+  {sub:'You',  obj:'you',  poss:'your',  mar:'तुम्ही / तुम्हाला / तुमचा', ex:'You completed your work.'},
+  {sub:'We',   obj:'us',   poss:'our',   mar:'आम्ही / आम्हाला / आमचा',   ex:'We love our school.'},
+  {sub:'They', obj:'them', poss:'their', mar:'ते / त्यांना / त्यांचा',     ex:'They finished their homework.'},
+  {sub:'He',   obj:'him',  poss:'his',   mar:'तो / त्याला / त्याचा',      ex:'He lost his phone.'},
+  {sub:'She',  obj:'her',  poss:'her',   mar:'ती / तिला / तिचा',          ex:'She reads her book.'},
+  {sub:'It',   obj:'it',   poss:'its',   mar:'ते / त्याला / त्याचे',      ex:'It wagged its tail.'},
+];
+
+const HELPING_VERBS = [
+  {v:'am',   mar:'आहे',     with:'I',              ex:'I am a student.'},
+  {v:'is',   mar:'आहे',     with:'He / She / It',  ex:'She is happy.'},
+  {v:'are',  mar:'आहेत',    with:'You / We / They',ex:'They are ready.'},
+  {v:'was',  mar:'होता',    with:'I / He / She',   ex:'He was tired.'},
+  {v:'were', mar:'होते',    with:'You / We / They',ex:'We were late.'},
+  {v:'will', mar:'असेल',    with:'All subjects',   ex:'I will come tomorrow.'},
+  {v:'have', mar:'असणे',    with:'I / We / They',  ex:'I have finished my work.'},
+  {v:'has',  mar:'आहे',     with:'He / She / It',  ex:'She has a new bag.'},
+  {v:'had',  mar:'होते',    with:'All subjects',   ex:'He had eaten before I came.'},
+];
+
+const MODAL_VERBS = [
+  {m:'can',      mar:'शकतो / शकते',      use:'Ability — क्षमता',       exE:'I can swim.',               exM:'मी पोहू शकतो.'},
+  {m:'could',    mar:'शकत होतो',          use:'Past ability — भूतकाळातील क्षमता', exE:'She could sing.',   exM:'ती गाऊ शकत होती.'},
+  {m:'may',      mar:'कदाचित',            use:'Possibility — शक्यता',   exE:'It may rain today.',        exM:'आज पाऊस पडेल कदाचित.'},
+  {m:'might',    mar:'कदाचित (कमी शक्यता)',use:'Weak possibility',       exE:'He might come.',            exM:'तो येईल कदाचित.'},
+  {m:'must',     mar:'पाहिजेच / आवश्यक',  use:'Obligation — बंधन',      exE:'You must study.',           exM:'तुम्ही अभ्यास केलाच पाहिजे.'},
+  {m:'should',   mar:'पाहिजे (सल्ला)',    use:'Advice — सल्ला',         exE:'You should eat fruits.',    exM:'तुम्ही फळे खावीत.'},
+  {m:'ought to', mar:'केले पाहिजे',       use:'Moral duty — नैतिक',    exE:'He ought to respect elders.',exM:'त्याने वडीलधाऱ्यांचा आदर केला पाहिजे.'},
+  {m:'need to',  mar:'गरज आहे',           use:'Necessity — गरज',        exE:'I need to sleep.',          exM:'मला झोपणे आवश्यक आहे.'},
+  {m:'dare to',  mar:'धाडस करणे',         use:'Courage — धाडस',         exE:'She dares to speak truth.', exM:'ती सत्य बोलण्याचे धाडस करते.'},
+  {m:'used to',  mar:'पूर्वी करायचो',     use:'Past habit — जुनी सवय', exE:'I used to play cricket.',   exM:'मी पूर्वी क्रिकेट खेळायचो.'},
+];
+
+/* MARATHI TRANSLATION HELPERS */
+const MODAL_MAR = {
+  'can':      (sub)=>sub+'शकतो/शकते.',
+  'could':    (sub)=>sub+'शकत होतो/होती.',
+  'may':      (sub)=>'कदाचित '+sub+'करेल.',
+  'might':    (sub)=>'कदाचित '+sub+'करेल.',
+  'must':     (sub)=>sub+'ने हे केलेच पाहिजे.',
+  'should':   (sub)=>sub+'ने हे करणे पाहिजे.',
+  'will':     (sub)=>sub+'करेल.',
+  'would':    (sub)=>sub+'करत असे.',
+  'ought to': (sub)=>sub+'ने करणे योग्य आहे.',
+  'need to':  (sub)=>sub+'ला गरज आहे.',
+  'dare to':  (sub)=>sub+'धाडस करतो/करते.',
+  'used to':  (sub)=>sub+'पूर्वी करायचो/करायची.',
+};
+
+const SUBMAR = {
+  'I':'मी ','We':'आम्ही ','You':'तू ','He':'तो ','She':'ती ','It':'ते ','They':'ते ','This':'हे ','That':'ते ',
+};
+
+/* VERB TRANSLATIONS (common verbs) */
+const VERB_MAR = {
+  swim:'पोहणे',sing:'गाणे',read:'वाचणे',write:'लिहिणे',play:'खेळणे',run:'धावणे',
+  eat:'खाणे',drink:'पिणे',sleep:'झोपणे',walk:'चालणे',talk:'बोलणे',listen:'ऐकणे',
+  cook:'स्वयंपाक करणे',dance:'नाचणे',draw:'चित्र काढणे',work:'काम करणे',study:'अभ्यास करणे',
+  teach:'शिकवणे',learn:'शिकणे',help:'मदत करणे',go:'जाणे',come:'येणे',know:'माहित असणे',
+  love:'प्रेम करणे',see:'पाहणे',think:'विचार करणे',speak:'बोलणे',drive:'वाहन चालवणे',
+  buy:'खरेदी करणे',sell:'विकणे',make:'बनवणे',find:'शोधणे',try:'प्रयत्न करणे',
+  travel:'प्रवास करणे',fly:'उडणे',climb:'चढणे',jump:'उडी मारणे',fight:'लढणे',
+  win:'जिंकणे',lose:'हरणे',finish:'पूर्ण करणे',start:'सुरू करणे',stop:'थांबणे',
+  send:'पाठवणे',receive:'घेणे',meet:'भेटणे',forget:'विसरणे',remember:'आठवणे',
+};
+
+/* 250 SENTENCES DATA */
+const ALL_SUBJECTS = ['I','We','You','He','She','It','They'];
+const ALL_MODALS = [
+  {m:'can',    mar:'शकतो/शकते'},
+  {m:'could',  mar:'शकत होतो'},
+  {m:'should', mar:'पाहिजे'},
+  {m:'must',   mar:'पाहिजेच'},
+  {m:'will',   mar:'करेल'},
+  {m:'may',    mar:'कदाचित'},
+  {m:'might',  mar:'कदाचित असेल'},
+  {m:'would',  mar:'करत असे'},
+  {m:'used to',mar:'पूर्वी करायचो'},
+];
+const VERB_PAIRS = [
+  ['swim','पोहणे'],['sing','गाणे'],['read','वाचणे'],['write','लिहिणे'],
+  ['play','खेळणे'],['run','धावणे'],['eat','खाणे'],['drink','पिणे'],
+  ['sleep','झोपणे'],['walk','चालणे'],['cook','स्वयंपाक करणे'],['dance','नाचणे'],
+  ['work','काम करणे'],['study','अभ्यास करणे'],['teach','शिकवणे'],['learn','शिकणे'],
+  ['help','मदत करणे'],['go','जाणे'],['come','येणे'],['speak','बोलणे'],
+  ['drive','वाहन चालवणे'],['fly','उडणे'],['climb','चढणे'],['jump','उडी मारणे'],
+  ['win','जिंकणे'],['try','प्रयत्न करणे'],['travel','प्रवास करणे'],['finish','पूर्ण करणे'],
+];
+const OBJ_PAIRS = [
+  ['a song','एक गाणे'],['a book','एक पुस्तक'],['a letter','एक पत्र'],
+  ['the work','काम'],['food','अन्न'],['water','पाणी'],['music','संगीत'],
+  ['English','इंग्रजी'],['cricket','क्रिकेट'],['a story','एक कथा'],
+  ['the teacher','शिक्षकाला'],['her','तिला'],['him','त्याला'],['them','त्यांना'],
+  ['the race','शर्यत'],['',''],['',''],['',''],
+];
+
+function buildSentences250() {
+  const sents = [];
+  let count = 0;
+  const targetPerModal = Math.ceil(250 / ALL_MODALS.length);
+  for (const modal of ALL_MODALS) {
+    let mc = 0;
+    for (const subj of ALL_SUBJECTS) {
+      for (const [verb, verbMar] of VERB_PAIRS) {
+        if (mc >= targetPerModal) break;
+        const obj = OBJ_PAIRS[Math.floor((mc * 3 + subj.length) % OBJ_PAIRS.length)];
+        const eng = `${subj} ${modal.m} ${verb}${obj[0] ? ' ' + obj[0] : ''}.`;
+        const subMar = SUBMAR[subj] || subj+' ';
+        const verbMar2 = verbMar ? verbMar.replace('णे','') : verb;
+        let mar = '';
+        if (modal.m === 'can')      mar = `${subMar}${obj[1]||''} ${verbMar2} शकतो/शकते.`;
+        else if (modal.m === 'could') mar = `${subMar}${obj[1]||''} ${verbMar2} शकत होतो.`;
+        else if (modal.m === 'should') mar = `${subMar}${obj[1]||''} ${verbMar2}णे पाहिजे.`;
+        else if (modal.m === 'must')  mar = `${subMar}${obj[1]||''} ${verbMar2}ले पाहिजेच.`;
+        else if (modal.m === 'will')  mar = `${subMar}${obj[1]||''} ${verbMar2}ईल.`;
+        else if (modal.m === 'may')   mar = `कदाचित ${subMar}${obj[1]||''} ${verbMar2}ईल.`;
+        else if (modal.m === 'might') mar = `कदाचित ${subMar}${obj[1]||''} ${verbMar2}ईल.`;
+        else if (modal.m === 'would') mar = `${subMar}${obj[1]||''} ${verbMar2}त असे.`;
+        else if (modal.m === 'used to') mar = `${subMar}पूर्वी ${obj[1]||''} ${verbMar2}त असे.`;
+        sents.push({ no: sents.length+1, sub: subj, modal: modal.m, verb, obj: obj[0], eng, mar });
+        mc++;
+        if (sents.length >= 250) return sents;
+      }
+      if (mc >= targetPerModal) break;
+    }
+  }
+  return sents.slice(0, 250);
+}
+
+const SENTENCES_250 = buildSentences250();
+
+/* ═══════════════════════════════════════════
+   RENDER TABLES
+═══════════════════════════════════════════ */
+
+function renderPronouns() {
+  const tbody = document.getElementById('pronounTableBody');
+  tbody.innerHTML = PRONOUNS.map((p, i) => `
+    <tr>
+      <td class="td-row-num">${i+1}</td>
+      <td><span class="td-badge badge-sub">${p.sub}</span></td>
+      <td><span class="td-badge badge-help">${p.obj}</span></td>
+      <td><span class="td-badge badge-mod">${p.poss}</span></td>
+      <td class="td-mar">${p.mar}</td>
+      <td class="td-obj">${p.ex}</td>
+    </tr>`).join('');
+}
+
+function renderHelpingVerbs() {
+  const tbody = document.getElementById('helpingTableBody');
+  tbody.innerHTML = HELPING_VERBS.map((h, i) => `
+    <tr>
+      <td class="td-row-num">${i+1}</td>
+      <td class="td-modal">${h.v}</td>
+      <td class="td-mar">${h.mar}</td>
+      <td><span class="td-badge badge-help">${h.with}</span></td>
+      <td class="td-obj">${h.ex}</td>
+    </tr>`).join('');
+}
+
+function renderModalVerbs() {
+  const tbody = document.getElementById('modalTableBody');
+  tbody.innerHTML = MODAL_VERBS.map((m, i) => `
+    <tr>
+      <td class="td-row-num">${i+1}</td>
+      <td class="td-modal">${m.m}</td>
+      <td class="td-mar">${m.mar}</td>
+      <td><span class="td-badge badge-mod">${m.use}</span></td>
+      <td class="td-obj">${m.exE}</td>
+      <td class="td-mar" style="font-size:13px">${m.exM}</td>
+    </tr>`).join('');
+}
+
+/* ═══════════════════════════════════════════
+   250 SENTENCES TABLE
+═══════════════════════════════════════════ */
+let currentFilter = 'all';
+let currentSentences = [...SENTENCES_250];
+
+function renderStats() {
+  const modCounts = {};
+  ALL_MODALS.forEach(m => {
+    modCounts[m.m] = SENTENCES_250.filter(s => s.modal === m.m).length;
+  });
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat"><div class="stat-val">250</div><div class="stat-lbl">Total Sentences</div></div>
+    <div class="stat"><div class="stat-val">${ALL_SUBJECTS.length}</div><div class="stat-lbl">Subjects</div></div>
+    <div class="stat"><div class="stat-val">${ALL_MODALS.length}</div><div class="stat-lbl">Modal Verbs</div></div>
+    <div class="stat"><div class="stat-val">${VERB_PAIRS.length}</div><div class="stat-lbl">Verbs Used</div></div>
+  `;
+}
+
+function renderSentences(list) {
+  const tbody = document.getElementById('sentTableBody');
+  document.getElementById('sentCount').textContent = `${list.length} sentences`;
+  document.getElementById('sentTableCount').textContent = `${list.length} sentences`;
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text3);font-size:13px">No sentences found.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(s => `
+    <tr>
+      <td class="td-row-num">${s.no}</td>
+      <td><span class="td-badge badge-sub">${s.sub}</span></td>
+      <td><span class="td-badge badge-mod">${s.modal}</span></td>
+      <td class="td-obj" style="font-weight:600;color:var(--slate)">${s.eng}</td>
+      <td class="td-mar">${s.mar}</td>
+      <td><button class="tts-inline" data-text="${s.eng.replace(/'/g,"&apos;")}">🔊</button></td>
+    </tr>`).join('');
+}
+
+/* ═══════════════════════════════════════════
+   GENERATOR
+═══════════════════════════════════════════ */
+let lastSentence = '';
+const savedSentences = [];
+
+function generateSentence() {
+  const subRaw = document.getElementById('gen-subject').value.split('|');
+  const subEng = subRaw[0];
+  const subMar = subRaw[1] || subRaw[0];
+  const modalRaw = document.getElementById('gen-modal').value.split('|');
+  const modalEng = modalRaw[0];
+  const verbRaw = document.getElementById('gen-verb').value.trim().toLowerCase();
+  const objRaw  = document.getElementById('gen-object').value.trim();
+
+  if (!verbRaw) {
+    document.getElementById('gen-verb').focus();
+    document.getElementById('gen-verb').style.borderColor = '#c0392b';
+    setTimeout(() => document.getElementById('gen-verb').style.borderColor = '', 1500);
+    return;
+  }
+
+  const verb = verbRaw;
+  const eng = `${subEng} ${modalEng} ${verb}${objRaw ? ' ' + objRaw : ''}.`;
+  lastSentence = eng;
+
+  // Marathi translation
+  const sm = SUBMAR[subEng] || subEng+' ';
+  const verbRoot = (VERB_MAR[verb] || verb+'णे').replace('णे','');
+  const objMar = getObjMar(objRaw);
+  let mar = '';
+  if (modalEng === 'can')      mar = `${sm}${objMar} ${verbRoot} शकतो/शकते.`;
+  else if (modalEng === 'could') mar = `${sm}${objMar} ${verbRoot} शकत होतो.`;
+  else if (modalEng === 'may')   mar = `कदाचित ${sm}${objMar} ${verbRoot}ईल.`;
+  else if (modalEng === 'might') mar = `कदाचित ${sm}${objMar} ${verbRoot}ईल.`;
+  else if (modalEng === 'must')  mar = `${sm}${objMar} ${verbRoot}ले पाहिजेच.`;
+  else if (modalEng === 'should') mar = `${sm}${objMar} ${verbRoot}णे पाहिजे.`;
+  else if (modalEng === 'will')  mar = `${sm}${objMar} ${verbRoot}ईल.`;
+  else if (modalEng === 'would') mar = `${sm}${objMar} ${verbRoot}त असे.`;
+  else if (modalEng === 'ought to') mar = `${sm}${objMar} ${verbRoot}णे योग्य आहे.`;
+  else if (modalEng === 'need to') mar = `${sm}ला ${objMar} ${verbRoot}ण्याची गरज आहे.`;
+  else if (modalEng === 'dare to') mar = `${sm}${objMar} ${verbRoot}ण्याचे धाडस करतो.`;
+  else if (modalEng === 'used to') mar = `${sm}पूर्वी ${objMar} ${verbRoot}त असे.`;
+  else mar = `${sm}${objMar} ${verbRoot}तो/ते.`;
+
+  document.getElementById('outputEng').textContent = eng;
+  document.getElementById('outputMar').textContent = mar;
+  document.getElementById('outputParts').innerHTML = `
+    <span class="part-chip pc-sub">${subEng} (${subMar})</span>
+    <span class="part-chip pc-modal">${modalEng}</span>
+    <span class="part-chip pc-verb">${verb}${VERB_MAR[verb] ? ' — '+VERB_MAR[verb] : ''}</span>
+    ${objRaw ? `<span class="part-chip pc-obj">${objRaw}</span>` : ''}
+  `;
+
+  const box = document.getElementById('outputBox');
+  box.classList.remove('show');
+  void box.offsetWidth;
+  box.classList.add('show');
+}
+
+const OBJ_MAR_MAP = {'a song':'एक गाणे','a book':'एक पुस्तक','a letter':'एक पत्र','the work':'काम','food':'अन्न','water':'पाणी','music':'संगीत','English':'इंग्रजी','cricket':'क्रिकेट','a story':'एक कथा','him':'त्याला','her':'तिला','them':'त्यांना','the race':'शर्यत','a flower':'एक फूल'};
+function getObjMar(obj) {
+  if (!obj) return '';
+  return (OBJ_MAR_MAP[obj.toLowerCase()] || obj) + ' ';
+}
+
+/* ═══════════════════════════════════════════
+   EVENT LISTENERS
+═══════════════════════════════════════════ */
+
+// Tab switching
+document.getElementById('mainNav').addEventListener('click', e => {
+  const btn = e.target.closest('.nav-tab');
+  if (!btn) return;
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(btn.dataset.tab).classList.add('active');
+});
+
+// Generate button
+document.getElementById('generateBtn').addEventListener('click', generateSentence);
+
+// Enter key on inputs
+['gen-verb','gen-object'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key === 'Enter') generateSentence();
+  });
+});
+
+// Random fill
+const EXAMPLE_VERBS = ['swim','sing','read','write','play','run','eat','cook','dance','study','teach','help','speak','drive','fly','climb','jump','win','travel'];
+const EXAMPLE_OBJS  = ['a song','a book','a letter','','','the work','music','English','cricket','',''];
+document.getElementById('randomFillBtn').addEventListener('click', () => {
+  const subjects = document.getElementById('gen-subject').options;
+  const modals   = document.getElementById('gen-modal').options;
+  subjects[Math.floor(Math.random()*subjects.length)].selected = true;
+  modals[Math.floor(Math.random()*modals.length)].selected = true;
+  document.getElementById('gen-verb').value   = EXAMPLE_VERBS[Math.floor(Math.random()*EXAMPLE_VERBS.length)];
+  document.getElementById('gen-object').value = EXAMPLE_OBJS[Math.floor(Math.random()*EXAMPLE_OBJS.length)];
+  generateSentence();
+});
+
+// Clear
+document.getElementById('clearBtn').addEventListener('click', () => {
+  document.getElementById('gen-verb').value = '';
+  document.getElementById('gen-object').value = '';
+  document.getElementById('outputBox').classList.remove('show');
+});
+
+// TTS
+document.getElementById('ttsGenerateBtn').addEventListener('click', () => {
+  if (lastSentence) speak(lastSentence);
+});
+
+// Copy
+document.getElementById('copyBtn').addEventListener('click', () => {
+  if (!lastSentence) return;
+  const text = document.getElementById('outputEng').textContent + '\n' + document.getElementById('outputMar').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy', 1500);
+  });
+});
+
+// Save
+document.getElementById('saveBtn').addEventListener('click', () => {
+  if (!lastSentence) return;
+  const eng = document.getElementById('outputEng').textContent;
+  const mar = document.getElementById('outputMar').textContent;
+  if (savedSentences.includes(eng)) return;
+  savedSentences.push(eng);
+  const wrap = document.getElementById('savedWrap');
+  wrap.style.display = 'block';
+  const list = document.getElementById('savedList');
+  const item = document.createElement('div');
+  item.style.cssText = 'padding:10px 14px;background:var(--bg2);border-radius:8px;margin-bottom:8px;display:flex;gap:10px;align-items:center;border:1px solid var(--border)';
+  item.innerHTML = `<div style="flex:1"><div style="font-weight:600;font-size:13px">${eng}</div><div style="font-family:\'Noto Sans Devanagari\',sans-serif;font-size:12px;color:var(--text3);margin-top:3px">${mar}</div></div><button class="tts-inline" onclick="speak('${eng.replace(/'/g,"\\'")}')">🔊</button>`;
+  list.appendChild(item);
+});
+
+// Negative button
+document.getElementById('negativeBtn').addEventListener('click', () => {
+  const curr = document.getElementById('outputEng').textContent;
+  if (!curr) return;
+  const modals = ['can','could','may','might','must','should','will','would'];
+  let neg = curr;
+  for (const m of modals) {
+    const rx = new RegExp(` ${m} `, 'i');
+    if (rx.test(curr)) {
+      neg = curr.replace(rx, ` ${m} not `);
+      break;
+    }
+  }
+  if (neg === curr && / ought to /i.test(curr)) neg = curr.replace(/ ought to /i, ' ought not to ');
+  if (neg === curr && / need to /i.test(curr))  neg = curr.replace(/ need to /i, ' do not need to ');
+  if (neg === curr && / used to /i.test(curr))  neg = curr.replace(/ used to /i, ' did not use to ');
+  document.getElementById('outputEng').textContent = neg.replace('..','.');
+  lastSentence = neg;
+});
+
+// Question button
+document.getElementById('questionBtn').addEventListener('click', () => {
+  const curr = document.getElementById('outputEng').textContent;
+  if (!curr) return;
+  const tokens = curr.replace(/\.$/,'').split(' ');
+  const MODAL_WORDS = new Set(['can','could','may','might','must','should','will','would','shall','ought']);
+  let q = '';
+  // Try modal inversion
+  const mi = tokens.findIndex((t,i) => i>0 && MODAL_WORDS.has(t.toLowerCase()));
+  if (mi > 0) {
+    const reorder = [tokens[mi], ...tokens.slice(0,mi), ...tokens.slice(mi+1)];
+    q = reorder.join(' ') + '?';
+  } else {
+    q = 'Can ' + tokens.join(' ').replace(/^[A-Z]/, c => c.toLowerCase()) + '?';
+  }
+  q = q.charAt(0).toUpperCase() + q.slice(1);
+  document.getElementById('outputEng').textContent = q;
+  lastSentence = q;
+});
+
+// Filter chips
+document.getElementById('filterRow').addEventListener('click', e => {
+  const chip = e.target.closest('.filter-chip');
+  if (!chip) return;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  currentFilter = chip.dataset.filter;
+  const filtered = currentFilter === 'all'
+    ? SENTENCES_250
+    : SENTENCES_250.filter(s => s.modal === currentFilter);
+  renderSentences(filtered);
+});
+
+// TTS on sentence table
+document.getElementById('sentTableBody').addEventListener('click', e => {
+  const btn = e.target.closest('.tts-inline');
+  if (!btn) return;
+  speak(btn.dataset.text);
+});
+
+// Global search
+document.getElementById('globalSearch').addEventListener('input', e => {
+  const q = e.target.value.trim().toLowerCase();
+  const dd = document.getElementById('searchDropdown');
+  if (!q || q.length < 2) { dd.classList.remove('show'); dd.innerHTML = ''; return; }
+  const results = SENTENCES_250.filter(s =>
+    s.eng.toLowerCase().includes(q) || s.mar.includes(q) || s.sub.toLowerCase().includes(q) || s.modal.includes(q)
+  ).slice(0, 8);
+  if (!results.length) {
+    dd.innerHTML = '<div class="sr-none">No results found</div>';
+  } else {
+    dd.innerHTML = results.map(s => `
+      <div class="sr-item" data-no="${s.no}">
+        <div class="sr-eng">${s.eng}</div>
+        <div class="sr-mar">${s.mar}</div>
+      </div>`).join('');
+  }
+  dd.classList.add('show');
+});
+
+document.getElementById('searchDropdown').addEventListener('click', e => {
+  const item = e.target.closest('.sr-item');
+  if (!item) return;
+  const no = parseInt(item.dataset.no);
+  document.getElementById('searchDropdown').classList.remove('show');
+  document.getElementById('globalSearch').value = '';
+  // Switch to sentences tab and scroll/highlight
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('[data-tab="tab-sentences"]').classList.add('active');
+  document.getElementById('tab-sentences').classList.add('active');
+  // Reset filter and render
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  document.querySelector('.filter-chip[data-filter="all"]').classList.add('active');
+  renderSentences(SENTENCES_250);
+  setTimeout(() => {
+    const row = document.querySelector(`#sentTableBody tr:nth-child(${no})`);
+    if (row) { row.scrollIntoView({behavior:'smooth',block:'center'}); row.style.background='rgba(232,134,10,0.15)'; setTimeout(()=>row.style.background='',2000); }
+  }, 200);
+});
+
+// Close search dropdown on outside click
+document.addEventListener('click', e => {
+  if (!document.getElementById('globalSearchWrap').contains(e.target))
+    document.getElementById('searchDropdown').classList.remove('show');
+});
+
+/* ═══════════════════════════════════════════
+   TEXT TO SPEECH
+═══════════════════════════════════════════ */
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'en-US'; utt.rate = 0.85;
+  window.speechSynthesis.speak(utt);
+}
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  renderPronouns();
+  renderHelpingVerbs();
+  renderModalVerbs();
+  renderStats();
+  renderSentences(SENTENCES_250);
+  // Auto fill and generate
+  document.getElementById('gen-verb').value = 'swim';
+  document.getElementById('gen-object').value = 'every day';
+  generateSentence();
+});
+</script>
+</body>
+</html>
